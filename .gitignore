@@ -1,0 +1,18 @@
+# Full image version — tracked locally only
+warframe-mastery-tracker.html
+
+# Downloaded artwork — regenerate with dev/download-*.js scripts
+Images/
+
+# Distributable archive
+*.zip
+
+# Dev build artefacts
+dev/*_output.js
+dev/*.txt
+dev/Download/
+dev/Import/*.xlsx
+dev/Import/*.ps1
+
+# npm — xlsx bundle is vendored to Import/xlsx.full.min.js
+dev/Import/node_modules/
