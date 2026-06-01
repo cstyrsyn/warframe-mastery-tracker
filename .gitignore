@@ -10,6 +10,7 @@ Images/
 # Dev build artefacts
 dev/*_output.js
 dev/*.txt
+dev/*.csv
 dev/Download/
 dev/Import/*.xlsx
 dev/Import/*.ps1
