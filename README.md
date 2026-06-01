@@ -4,9 +4,11 @@ A portable, offline web app for tracking Mastery Rank progress in Warframe.
 
 ## Features
 
-- **Full item coverage** — Warframes, Primary, Secondary, Melee, Companions, Companion Weapons, Vehicles, Arch Weapons, Amps, and Intrinsics
+- **Full item coverage** — Warframes, Primary, Secondary, Melee, Companions, Companion Weapons, Vehicles, Arch Weapons, Amps, Intrinsics, Mods, and Arcanes
 - **Star Chart** — track node completion for both standard and Steel Path, with per-planet XP and junction counts
 - **Intrinsics** — separate tracking for Railjack and Drifter skill trees
+- **Mods** — track mod collection with rank sliders, polarity, rarity, and category filters
+- **Arcanes** — track arcane collection and rank progress
 - **Acquisition tracking** — mark items as owned before they're levelled, so you know what's in your inventory
 - **Per-item rank sliders** — set exact rank for partially levelled items
 - **Projected MR** — live XP total and Mastery Rank projection as you update ranks
@@ -22,11 +24,11 @@ A portable, offline web app for tracking Mastery Rank progress in Warframe.
 
 ## Getting Started
 
-1. Download `warframe-mastery-tracker.html`, `Import` and `data.js` and place them in the same folder.
-2. Open `warframe-mastery-tracker.html` in your browser (Chrome or Edge recommended for full auto-backup support).
+1. Download `warframe-mastery-tracker-base.html`, `Import/xlsx.full.min.js`, and `data.js` and place them in the same folder (maintaining the `Import/` subfolder).
+2. Open `warframe-mastery-tracker-base.html` in your browser (Chrome or Edge recommended for full auto-backup support).
 3. That's it. No internet connection required after download.
 
-> **Note:** The two files must stay in the same folder. Moving only the HTML file will break the data.
+> **Card images:** The base version does not include card artwork. A full version with tile images can be built locally — download the images using the scripts in `dev/Download/` and open `warframe-mastery-tracker.html` (not tracked in git).
 
 ## Usage
 
@@ -49,18 +51,35 @@ Click the floppy disk icon in the header to link a local save file. Once linked,
 - **Category buttons** (above the card grid on most tabs) filter to a specific subcategory.
 - **Visibility buttons** (Show All / Hide Maxed / etc.) toggle which completion states are shown.
 
-## Files
+## Repository Structure
 
-| File | Purpose |
+| Path | Purpose |
 |------|---------|
-| `warframe-mastery-tracker.html` | The entire app — HTML, CSS, and JavaScript in one file |
+| `warframe-mastery-tracker-base.html` | The app — HTML, CSS, and JavaScript in one file (no card images) |
 | `data.js` | All item data: names, categories, obtain methods, ranks, and XP values |
-| `Source/` | Reference CSVs used to build `data.js` — not required at runtime |
-| `Import/` | Google Sheets import pipeline for bulk-importing progress from a spreadsheet |
+| `Import/xlsx.full.min.js` | Vendored xlsx bundle used by the spreadsheet import feature |
+| `dev/Source/` | Source CSVs that define the content of `data.js` |
+| `dev/update.js` | Script for adding new items from CSV to `data.js` — see `dev/UPDATE_README.md` |
+| `dev/Build/` | Legacy one-shot build scripts used to generate the initial `data.js` sections |
+| `dev/Download/` | Scripts to download card images from the wiki into `Images/` (gitignored) |
+| `dev/Templates/` | CSV templates for each section — copy and fill in to add new items |
+| `dev/UPDATE_README.md` | Full documentation for the update workflow |
 
 ## Adding or Updating Items
 
-All item data lives in `data.js`. Each item is an array:
+The recommended workflow uses `dev/update.js` — a validated, dry-run-by-default script that appends new items to `data.js` from CSV files.
+
+```
+node dev/update.js                          # preview all sections
+node dev/update.js --section primary        # preview one section
+node dev/update.js --section primary --apply  # write changes
+```
+
+Copy the relevant template from `dev/Templates/`, fill in your new items, then run the script. See `dev/UPDATE_README.md` for the full workflow, CSV formats, and validation rules.
+
+### Manual edits
+
+Items can also be added directly to `data.js`. Each item is an array:
 
 ```js
 ["Name", "Category", "How to obtain", maxRank, xpPerLevel, tradable, compFor]
@@ -73,22 +92,8 @@ All item data lives in `data.js`. Each item is an array:
 | `How to obtain` | string | Source description shown on the card |
 | `maxRank` | number | `30` standard, `40` for Kuva/Tenet/Coda/Necramechs/Paracesis |
 | `xpPerLevel` | number | `200` for frames/companions/archwings, `100` for all weapons |
-| `tradable` | `1` or `0` | Optional. `1` shows a Tradable badge on the card |
+| `tradable` | `1` or `0` | Optional. `1` shows a Tradable badge and market link |
 | `compFor` | string | Optional. Semicolon-separated list of weapons this item crafts into |
-
-**Examples:**
-```js
-// Standard warframe
-["Styanax", "Base", "Kahls Garrison: Chipper inventory", 30, 200],
-
-// Tradable prime weapon
-["Braton Prime", "Prime", "Relics", 30, 100, 1],
-
-// Crafting component
-["Vasto", "Single", "Market", 30, 100, 0, "Akvasto; Redeemer"],
-```
-
-Item arrays are grouped into named constants (`WARFRAMES`, `PRIMARY`, `SECONDARY`, etc.) at the top of `data.js`. Add new items to the appropriate array and refresh the page.
 
 ## Data Notes
 
