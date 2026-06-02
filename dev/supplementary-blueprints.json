@@ -615,7 +615,16 @@
   "Hec": null,
   "Helios Prime": null,
   "Helminth Charger": null,
-  "Helstrum": null,
+  "Helstrum": {
+    "Credits": 50000,
+    "Time": 86400,
+    "Parts": [
+      { "Name": "Star Crimzian", "Count": 10, "Type": "Resource" },
+      { "Name": "Star Amarast", "Count": 10, "Type": "Resource" },
+      { "Name": "Recaster Neural Relay", "Count": 10, "Type": "Resource" },
+      { "Name": "Synathid Ecosynth Analyzer", "Count": 1, "Type": "Resource" }
+    ]
+  },
   "Huras": null,
   "Itzal": {
     "Credits": 25000,

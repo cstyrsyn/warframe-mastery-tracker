@@ -532,6 +532,7 @@ const BLUEPRINTS = new Map([
   ["Hek",[25000,86400,[["Neurodes",5,"Resource"],["Circuits",900,"Resource"],["Salvage",1200,"Resource"],["Rubedo",1000,"Resource"]]]],
   ["Heliocor",[20000,43200,[["Gammacor",1,"Weapon"],["Polymer Bundle",700,"Resource"],["Rubedo",1200,"Resource"],["Morphics",1,"Resource"]]]],
   ["Helios",[5000,86400,[["Fieldron",10,"Resource"],["Oxium",300,"Resource"],["Ferrite",5000,"Resource"],["Forma",1,"Resource"]]]],
+  ["Helstrum",[50000,86400,[["Star Crimzian",10,"Resource"],["Star Amarast",10,"Resource"],["Recaster Neural Relay",10,"Resource"],["Synathid Ecosynth Analyzer",1,"Resource"]]]],
   ["Hema",[30000,43200,[["Mutagen Mass",5,"Resource"],["Salvage",50000,"Resource"],["Circuits",5000,"Resource"],["Forma",1,"Resource"]]]],
   ["Hespar",[15000,43200,[["Thrax Plasm",50,"Resource"],["Blade",1,"Item",[30000,43200,[["Thrax Plasm",60],["Voidplume Quill",10],["Ferrite",5500],["Voidgel Orb",15]]]],["Handle",1,"Item",[30000,43200,[["Thrax Plasm",40],["Voidplume Quill",10],["Alloy Plate",4200],["Entrati Lanthorn",5]]]]]]],
   ["Higasa",[25000,86400,[["Fate Pearl",5,"Resource"],["Barrel",1,"Item",[20000,43200,[["Fate Pearl",14],["Ferrite",100],["Goopolla Spleen",10],["Esher Devar",10]]]],["Receiver",1,"Item",[20000,43200,[["Fate Pearl",14],["Ferrite",100],["Grokdrul",40],["Coprite Alloy",20]]]],["Stock",1,"Item",[20000,43200,[["Fate Pearl",14],["Alloy Plate",100],["Cryotic",100],["Iradite",25]]]]]]],

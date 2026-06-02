@@ -337,6 +337,10 @@ body {
 .recipe-craftable { font-size: 8px; color: var(--text-muted); margin-left: 3px; vertical-align: middle; }
 .recipe-link { color: inherit; text-decoration: none; border-bottom: 1px dotted currentColor; }
 .recipe-link:hover { border-bottom-style: solid; }
+.relic-row { display: flex; flex-wrap: wrap; gap: 2px; margin: -2px 0 4px 4px; }
+.relic-chip { font-size: 7.5px; padding: 1px 4px; border-radius: 3px; border: 1px solid; cursor: default; white-space: nowrap; }
+.relic-chip.active  { color: var(--green); border-color: #1e3826; background: #0b1a10; }
+.relic-chip.vaulted { color: var(--text-muted); border-color: var(--border-soft); }
 .recipe-all-res { display: none; }
 .card-back.all-res .recipe-components { display: none; }
 .card-back.all-res .recipe-all-res { display: block; }
@@ -829,6 +833,7 @@ body {
 </div>
 
 <script src="data.js"></script>
+<script src="relics.js"></script>
 
 <script>
 // ─────────────────────────────────────────────
@@ -920,7 +925,7 @@ function flattenResources(name, multiplier, visited) {
       for (const [sName, sCount] of (subParts || [])) acc[sName] = (acc[sName] || 0) + sCount * qty;
     } else {
       // Warframe components are stored as "Dante Neuroptics" but listed as "Neuroptics" in the parent
-      const key = BLUEPRINTS.has(pName) ? pName : BLUEPRINTS.has(name + ' ' + pName) ? name + ' ' + pName : null;
+      const key = BLUEPRINTS.has(pName) ? pName : BLUEPRINTS.has(name + ' ' + pName) ? name + ' ' + pName : BLUEPRINTS.has(name + ' ' + pName.replace(/^Prime\s+/, '')) ? name + ' ' + pName.replace(/^Prime\s+/, '') : null;
       if (key) {
         const sub = flattenResources(key, qty, new Set(visited));
         for (const [r, c] of Object.entries(sub)) acc[r] = (acc[r] || 0) + c;
@@ -944,6 +949,36 @@ function wikiLink(name) {
   return `<a class="recipe-link" href="${href}" target="_blank" rel="noopener">${esc(name)}</a>`;
 }
 
+function isPrimeVaulted(name) {
+  if (typeof RELIC_DROPS === 'undefined') return false;
+  const entry = RELIC_DROPS.get(name);
+  return entry !== undefined && entry[0] === 1;
+}
+
+function relicDropsForPart(itemName, pName, pType) {
+  if (typeof RELIC_DROPS === 'undefined') return null;
+  const entry = RELIC_DROPS.get(itemName);
+  if (!entry) return null;
+  const parts = entry[1];
+  if (parts[pName]) return parts[pName];
+  if (pType === 'Item' && pName.startsWith('Prime ')) {
+    const key = pName.slice(6) + ' Blueprint';
+    if (parts[key]) return parts[key];
+  }
+  return null;
+}
+
+function relicChipsHtml(drops) {
+  if (!drops || !drops.length) return '';
+  const R = ['C','U','R'];
+  const chips = drops.map(([idx, rar, v]) => {
+    const rname = RELIC_INDEX[idx];
+    const cls = RELIC_VAULTED.has(idx) ? 'vaulted' : 'active';
+    return `<span class="relic-chip ${cls}" title="${esc(rname)}">${esc(rname)} ${R[rar]||'?'}</span>`;
+  }).join('');
+  return `<div class="relic-row">${chips}</div>`;
+}
+
 function buildRecipeBack(name) {
   const bp = BLUEPRINTS.get(name);
   if (!bp) return '';
@@ -954,14 +989,21 @@ function buildRecipeBack(name) {
   if (hours) metaParts.push(hours);
   const meta = metaParts.join(' · ');
 
+  // Relic drop row for the main blueprint itself
+  const itemRelicEntry = typeof RELIC_DROPS !== 'undefined' ? RELIC_DROPS.get(name) : null;
+  const bpDrops = itemRelicEntry ? itemRelicEntry[1]['Blueprint'] : null;
+  const bpRow = bpDrops
+    ? `<div class="recipe-item"><span class="recipe-res prime">Blueprint</span><span class="recipe-count">×1</span></div>${relicChipsHtml(bpDrops)}`
+    : '';
+
   let hasCraftable = false;
   let compHtml;
   if (!parts || parts.length === 0) {
-    compHtml = '<div class="recipe-empty">No components listed</div>';
+    compHtml = bpRow + '<div class="recipe-empty">No components listed</div>';
   } else {
-    compHtml = parts.map(([pName, pCount, pType, subCost]) => {
+    compHtml = bpRow + parts.map(([pName, pCount, pType, subCost]) => {
       const cls = pType === 'PrimePart' ? ' prime' : (pType === 'Weapon' ? ' weapon' : '');
-      const bpKey = BLUEPRINTS.has(pName) ? pName : BLUEPRINTS.has(name + ' ' + pName) ? name + ' ' + pName : null;
+      const bpKey = BLUEPRINTS.has(pName) ? pName : BLUEPRINTS.has(name + ' ' + pName) ? name + ' ' + pName : BLUEPRINTS.has(name + ' ' + pName.replace(/^Prime\s+/, '')) ? name + ' ' + pName.replace(/^Prime\s+/, '') : null;
       const craftable = !!subCost || !!bpKey;
       if (craftable) hasCraftable = true;
       let badge = '';
@@ -971,7 +1013,13 @@ function buildRecipeBack(name) {
         const costStr = [cr ? fmt(cr)+' ₵' : '', h].filter(Boolean).join(' · ');
         badge = `<span class="recipe-craftable">⚙${costStr ? ' '+costStr : ''}</span>`;
       }
-      return `<div class="recipe-item"><span class="recipe-res${cls}">${wikiLink(pName)}${badge}</span><span class="recipe-count">×${fmt(pCount)}</span></div>`;
+      const nameHtml = (craftable || pType !== 'Resource') ? esc(pName) : wikiLink(pName);
+      let relicHtml = '';
+      if (pType === 'PrimePart' || pType === 'Item') {
+        const drops = relicDropsForPart(name, pName, pType);
+        if (drops) relicHtml = relicChipsHtml(drops);
+      }
+      return `<div class="recipe-item"><span class="recipe-res${cls}">${nameHtml}${badge}</span><span class="recipe-count">×${fmt(pCount)}</span></div>${relicHtml}`;
     }).join('');
   }
 
@@ -1443,7 +1491,7 @@ function buildCard(tab, name, cat, obtain, maxRank, xpPL, tradable, compFor) {
     compTag = `<div class="card-comp" title="Used to craft: ${esc(parts.join(', '))}">${esc(label)}</div>`;
   }
   const circuitTag = (tab === 'warframes' && CIRCUIT_WF.has(name)) ? '<div class="card-circuit">Circuit</div>' : '';
-  const vaultedTag = (tab === 'warframes' && VAULTED_WF.has(name))
+  const vaultedTag = isPrimeVaulted(name)
     ? (progress['wf-resurgence:' + name]
         ? `<button class="card-resurgence" onclick="toggleVaultedState('${ename}')">Resurgence</button>`
         : `<button class="card-vaulted" onclick="toggleVaultedState('${ename}')">Vaulted</button>`)
@@ -1500,7 +1548,7 @@ function buildListRow(tab, name, cat, obtain, maxRank, xpPL, tradable, compFor) 
     compTag = `<div class="card-comp" title="Used to craft: ${esc(parts.join(', '))}">${esc(label)}</div>`;
   }
   const circuitTag = (tab === 'warframes' && CIRCUIT_WF.has(name)) ? '<div class="card-circuit">Circuit</div>' : '';
-  const vaultedTag = (tab === 'warframes' && VAULTED_WF.has(name))
+  const vaultedTag = isPrimeVaulted(name)
     ? (progress['wf-resurgence:' + name]
         ? `<button class="card-resurgence" onclick="toggleVaultedState('${ename}')">Resurgence</button>`
         : `<button class="card-vaulted" onclick="toggleVaultedState('${ename}')">Vaulted</button>`)

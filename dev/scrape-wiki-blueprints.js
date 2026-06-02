@@ -48,15 +48,18 @@ function httpGet(url) {
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
 async function fetchWikiText(title) {
-  const qs = new URLSearchParams({
-    action: 'query', prop: 'revisions', titles: title + '/Main',
-    rvprop: 'content', rvslots: 'main', format: 'json',
-  });
-  const raw  = await httpGet(`${WIKI_API}?${qs}`);
-  const json = JSON.parse(raw);
-  const page = Object.values(json.query.pages)[0];
-  if (page.missing !== undefined) return null;
-  return page.revisions?.[0]?.slots?.main?.['*'] ?? null;
+  for (const t of [title + '/Main', title]) {
+    const qs = new URLSearchParams({
+      action: 'query', prop: 'revisions', titles: t,
+      rvprop: 'content', rvslots: 'main', format: 'json',
+    });
+    const raw  = await httpGet(`${WIKI_API}?${qs}`);
+    const json = JSON.parse(raw);
+    const page = Object.values(json.query.pages)[0];
+    if (page.missing !== undefined) continue;
+    return page.revisions?.[0]?.slots?.main?.['*'] ?? null;
+  }
+  return null;
 }
 
 // ── Template parsing ──────────────────────────────────────────────────────────
