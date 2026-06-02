@@ -326,7 +326,7 @@ const PRIMARY = [
   ["Kohm","Shotguns","Market",30,100],
   ["Phage","Shotguns","Clan: Bio Lab",30,100],
   ["Phantasma","Shotguns","Market",30,100],
-  ["Rauta","Shotguns","Acrithis/Duviri",30,100],
+  ["Rauta","Shotguns","Acrithis/Duviri",30,100,1],
   ["Sancti Tigris","Shotguns","Syndicate: New Loka",30,100,1],
   ["Sobek","Shotguns","Market",30,100],
   ["Steflos","Shotguns","Mirror Defense: Tyana Pass",30,100],
