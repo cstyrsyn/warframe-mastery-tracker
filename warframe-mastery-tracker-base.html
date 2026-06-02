@@ -335,6 +335,8 @@ body {
 .recipe-tab { font-size: 9px; padding: 2px 7px; border-radius: 3px; border: 1px solid var(--border-soft); color: var(--text-muted); background: none; cursor: pointer; }
 .recipe-tab.on { background: var(--tag-bg); color: var(--text); border-color: var(--border); }
 .recipe-craftable { font-size: 8px; color: var(--text-muted); margin-left: 3px; vertical-align: middle; }
+.recipe-link { color: inherit; text-decoration: none; border-bottom: 1px dotted currentColor; }
+.recipe-link:hover { border-bottom-style: solid; }
 .recipe-all-res { display: none; }
 .card-back.all-res .recipe-components { display: none; }
 .card-back.all-res .recipe-all-res { display: block; }
@@ -937,6 +939,11 @@ function setRecipeView(btn, view) {
   btn.classList.add('on');
 }
 
+function wikiLink(name) {
+  const href = 'https://wiki.warframe.com/w/' + name.replace(/ /g, '_');
+  return `<a class="recipe-link" href="${href}" target="_blank" rel="noopener">${esc(name)}</a>`;
+}
+
 function buildRecipeBack(name) {
   const bp = BLUEPRINTS.get(name);
   if (!bp) return '';
@@ -964,7 +971,7 @@ function buildRecipeBack(name) {
         const costStr = [cr ? fmt(cr)+' ₵' : '', h].filter(Boolean).join(' · ');
         badge = `<span class="recipe-craftable">⚙${costStr ? ' '+costStr : ''}</span>`;
       }
-      return `<div class="recipe-item"><span class="recipe-res${cls}">${esc(pName)}${badge}</span><span class="recipe-count">×${fmt(pCount)}</span></div>`;
+      return `<div class="recipe-item"><span class="recipe-res${cls}">${wikiLink(pName)}${badge}</span><span class="recipe-count">×${fmt(pCount)}</span></div>`;
     }).join('');
   }
 
@@ -974,7 +981,7 @@ function buildRecipeBack(name) {
     const flat = flattenResources(name, 1, new Set());
     allResHtml = Object.entries(flat)
       .sort((a, b) => b[1] - a[1])
-      .map(([rName, rCount]) => `<div class="recipe-item"><span class="recipe-res">${esc(rName)}</span><span class="recipe-count">×${fmt(rCount)}</span></div>`)
+      .map(([rName, rCount]) => `<div class="recipe-item"><span class="recipe-res">${wikiLink(rName)}</span><span class="recipe-count">×${fmt(rCount)}</span></div>`)
       .join('');
     toggleHtml = `<div class="recipe-toggle">
     <button class="recipe-tab on" onclick="setRecipeView(this,'comp')">Components</button>
