@@ -226,52 +226,52 @@ body {
 }
 .card-tradable {
   font-size: 8px; padding: 2px 5px; border-radius: 3px;
-  background: rgba(74,150,96,0.12); color: var(--green);
-  border: 1px solid rgba(74,150,96,0.35);
-  text-transform: uppercase; letter-spacing: 0.5px;
+  background: rgba(74,150,96,0.30); color: var(--green);
+  border: 1px solid rgba(74,150,96,0.78);
+  text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;
   white-space: nowrap; flex-shrink: 0; text-decoration: none;
 }
-.card-tradable:hover { background: rgba(74,150,96,0.22); }
+.card-tradable:hover { background: rgba(74,150,96,0.40); }
 .card-incarnon {
   font-size: 8px; padding: 2px 5px; border-radius: 3px;
-  background: rgba(208,128,64,0.12); color: var(--orange);
-  border: 1px solid rgba(208,128,64,0.35);
-  text-transform: uppercase; letter-spacing: 0.5px;
+  background: rgba(208,128,64,0.30); color: var(--orange);
+  border: 1px solid rgba(208,128,64,0.78);
+  text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;
   white-space: nowrap; flex-shrink: 0; text-decoration: none;
 }
-.card-incarnon:hover { background: rgba(208,128,64,0.22); }
-.card-incarnon.on { background: rgba(160,100,220,0.12); color: #b87ce0; border-color: rgba(160,100,220,0.45); }
-.card-incarnon.on:hover { background: rgba(160,100,220,0.22); }
+.card-incarnon:hover { background: rgba(208,128,64,0.40); }
+.card-incarnon.on { background: rgba(160,100,220,0.30); color: #b87ce0; border-color: rgba(160,100,220,0.80); }
+.card-incarnon.on:hover { background: rgba(160,100,220,0.40); }
 .card-circuit {
   font-size: 8px; padding: 2px 5px; border-radius: 3px;
-  background: rgba(74,180,210,0.1); color: #4ab4d2;
-  border: 1px solid rgba(74,180,210,0.35);
-  text-transform: uppercase; letter-spacing: 0.5px;
+  background: rgba(74,180,210,0.28); color: #4ab4d2;
+  border: 1px solid rgba(74,180,210,0.78);
+  text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;
   white-space: nowrap; flex-shrink: 0;
 }
 .card-vaulted {
   font-size: 8px; padding: 2px 5px; border-radius: 3px;
-  background: rgba(180,120,60,0.1); color: #c8813c;
-  border: 1px solid rgba(180,120,60,0.35);
-  text-transform: uppercase; letter-spacing: 0.5px;
+  background: rgba(180,120,60,0.28); color: #c8813c;
+  border: 1px solid rgba(180,120,60,0.78);
+  text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;
   white-space: nowrap; flex-shrink: 0; cursor: pointer;
   font-family: inherit;
 }
-.card-vaulted:hover { background: rgba(180,120,60,0.2); }
+.card-vaulted:hover { background: rgba(180,120,60,0.38); }
 .card-resurgence {
   font-size: 8px; padding: 2px 5px; border-radius: 3px;
-  background: rgba(200,170,110,0.12); color: var(--gold);
-  border: 1px solid rgba(200,170,110,0.45);
-  text-transform: uppercase; letter-spacing: 0.5px;
+  background: rgba(200,170,110,0.30); color: var(--gold);
+  border: 1px solid rgba(200,170,110,0.80);
+  text-transform: uppercase; letter-spacing: 0.5px; font-weight: 500;
   white-space: nowrap; flex-shrink: 0; cursor: pointer;
   font-family: inherit;
 }
-.card-resurgence:hover { background: rgba(200,170,110,0.22); }
+.card-resurgence:hover { background: rgba(200,170,110,0.40); }
 .card-comp {
   font-size: 8px; padding: 2px 5px; border-radius: 3px;
-  background: rgba(200,170,110,0.1); color: var(--gold-dim);
-  border: 1px solid rgba(200,170,110,0.3);
-  white-space: nowrap; flex-shrink: 0; cursor: help;
+  background: rgba(200,170,110,0.26); color: var(--gold-dim);
+  border: 1px solid rgba(200,170,110,0.72);
+  white-space: nowrap; flex-shrink: 0; cursor: help; font-weight: 500;
   max-width: 90px; overflow: hidden; text-overflow: ellipsis;
 }
 .card-obtain-row { display: flex; align-items: center; gap: 5px; margin-bottom: 11px; }
@@ -298,17 +298,46 @@ body {
   padding: 2px 7px; border: 1px solid var(--border);
   border-radius: 3px; background: var(--surface2);
   color: var(--text-muted); cursor: pointer; font-size: 9px;
-  transition: all 0.12s;
+  font-weight: 500; transition: all 0.12s;
 }
 .qbtn:hover { color: var(--text); border-color: var(--text-muted); }
-.qbtn.mx:hover { color: var(--green); border-color: var(--green); }
-.qbtn.zr:hover { color: var(--red); border-color: var(--red); }
-.qbtn.aq { color: var(--text-muted); }
-.qbtn.aq.on { color: var(--blue); border-color: var(--blue); background: rgba(74,128,200,0.08); }
-.qbtn.aq:not(.on):hover { color: var(--blue); border-color: rgba(74,128,200,0.5); }
-.qbtn.inc { color: var(--text-muted); }
-.qbtn.inc.on { color: #b87ce0; border-color: rgba(160,100,220,0.7); background: rgba(160,100,220,0.1); }
-.qbtn.inc:not(.on):hover { color: #b87ce0; border-color: rgba(160,100,220,0.4); }
+.qbtn.mx { color: var(--green); border-color: rgba(74,150,96,0.60); background: rgba(74,150,96,0.18); }
+.qbtn.mx:hover { background: rgba(74,150,96,0.30); border-color: rgba(74,150,96,0.88); }
+.qbtn.zr { color: var(--red); border-color: rgba(192,64,64,0.60); background: rgba(192,64,64,0.18); }
+.qbtn.zr:hover { background: rgba(192,64,64,0.30); border-color: rgba(192,64,64,0.88); }
+.qbtn.aq { color: var(--blue); border-color: rgba(74,128,200,0.60); background: rgba(74,128,200,0.18); }
+.qbtn.aq.on { color: var(--blue); border-color: rgba(74,128,200,0.88); background: rgba(74,128,200,0.30); }
+.qbtn.aq:not(.on):hover { border-color: rgba(74,128,200,0.80); background: rgba(74,128,200,0.26); }
+.qbtn.inc { color: var(--orange); border-color: rgba(208,128,64,0.60); background: rgba(208,128,64,0.18); }
+.qbtn.inc.on { color: #b87ce0; border-color: rgba(160,100,220,0.88); background: rgba(160,100,220,0.30); }
+.qbtn.inc:not(.on):hover { border-color: rgba(208,128,64,0.88); background: rgba(208,128,64,0.30); }
+.qbtn.rec { color: var(--gold-light); border-color: rgba(200,170,110,0.60); background: rgba(200,170,110,0.18); }
+.qbtn.rec:hover { background: rgba(200,170,110,0.30); border-color: rgba(200,170,110,0.88); }
+
+/* ── CARD FLIP ── */
+.card-front { display: block; }
+.card-back  { display: none; }
+.card.flipped .card-front { display: none; }
+.card.flipped .card-back  { display: block; }
+.list-row .card-front { display: flex; align-items: center; gap: 16px; width: 100%; }
+.card.flipped.list-row { display: block; }
+.recipe-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.recipe-title  { font-weight: 600; font-size: 12px; color: var(--text); }
+.recipe-meta   { font-size: 9px; color: var(--text-muted); }
+.recipe-list   { display: flex; flex-direction: column; gap: 4px; margin-bottom: 8px; }
+.recipe-item   { display: flex; justify-content: space-between; align-items: center; font-size: 10px; }
+.recipe-res    { color: var(--text); }
+.recipe-res.prime  { color: var(--gold-light); }
+.recipe-res.weapon { color: var(--blue); }
+.recipe-count  { font-size: 9px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+.recipe-empty  { font-size: 10px; color: var(--text-muted); font-style: italic; }
+.recipe-toggle { display: flex; gap: 4px; margin-bottom: 8px; }
+.recipe-tab { font-size: 9px; padding: 2px 7px; border-radius: 3px; border: 1px solid var(--border-soft); color: var(--text-muted); background: none; cursor: pointer; }
+.recipe-tab.on { background: var(--tag-bg); color: var(--text); border-color: var(--border); }
+.recipe-craftable { font-size: 8px; color: var(--text-muted); margin-left: 3px; vertical-align: middle; }
+.recipe-all-res { display: none; }
+.card-back.all-res .recipe-components { display: none; }
+.card-back.all-res .recipe-all-res { display: block; }
 
 /* ── EMPTY STATE ── */
 .empty { text-align: center; color: var(--text-muted); padding: 48px 20px; grid-column: 1/-1; }
@@ -871,6 +900,100 @@ function toggleIncarnon(tab, name) {
   render();
 }
 
+function flipCard(btn) {
+  btn.closest('.card').classList.toggle('flipped');
+}
+
+function flattenResources(name, multiplier, visited) {
+  if (visited.has(name)) return {};
+  visited.add(name);
+  const bp = BLUEPRINTS.get(name);
+  if (!bp) return {};
+  const [,,parts] = bp;
+  const acc = {};
+  for (const [pName, pCount, , subCost] of (parts || [])) {
+    const qty = pCount * multiplier;
+    if (subCost) {
+      const [,,subParts] = subCost;
+      for (const [sName, sCount] of (subParts || [])) acc[sName] = (acc[sName] || 0) + sCount * qty;
+    } else {
+      // Warframe components are stored as "Dante Neuroptics" but listed as "Neuroptics" in the parent
+      const key = BLUEPRINTS.has(pName) ? pName : BLUEPRINTS.has(name + ' ' + pName) ? name + ' ' + pName : null;
+      if (key) {
+        const sub = flattenResources(key, qty, new Set(visited));
+        for (const [r, c] of Object.entries(sub)) acc[r] = (acc[r] || 0) + c;
+      } else {
+        acc[pName] = (acc[pName] || 0) + qty;
+      }
+    }
+  }
+  return acc;
+}
+
+function setRecipeView(btn, view) {
+  const back = btn.closest('.card-back');
+  back.classList.toggle('all-res', view === 'all');
+  back.querySelectorAll('.recipe-tab').forEach(t => t.classList.remove('on'));
+  btn.classList.add('on');
+}
+
+function buildRecipeBack(name) {
+  const bp = BLUEPRINTS.get(name);
+  if (!bp) return '';
+  const [credits, time, parts] = bp;
+  const hours = time >= 3600 ? (time / 3600).toFixed(0) + 'h' : time > 0 ? (time / 60).toFixed(0) + 'm' : '';
+  const metaParts = [];
+  if (credits) metaParts.push(fmt(credits) + ' ₵');
+  if (hours) metaParts.push(hours);
+  const meta = metaParts.join(' · ');
+
+  let hasCraftable = false;
+  let compHtml;
+  if (!parts || parts.length === 0) {
+    compHtml = '<div class="recipe-empty">No components listed</div>';
+  } else {
+    compHtml = parts.map(([pName, pCount, pType, subCost]) => {
+      const cls = pType === 'PrimePart' ? ' prime' : (pType === 'Weapon' ? ' weapon' : '');
+      const bpKey = BLUEPRINTS.has(pName) ? pName : BLUEPRINTS.has(name + ' ' + pName) ? name + ' ' + pName : null;
+      const craftable = !!subCost || !!bpKey;
+      if (craftable) hasCraftable = true;
+      let badge = '';
+      if (craftable) {
+        const [cr, t] = subCost || (bpKey ? BLUEPRINTS.get(bpKey) : []) || [];
+        const h = t >= 3600 ? (t/3600).toFixed(0)+'h' : t > 0 ? (t/60).toFixed(0)+'m' : '';
+        const costStr = [cr ? fmt(cr)+' ₵' : '', h].filter(Boolean).join(' · ');
+        badge = `<span class="recipe-craftable">⚙${costStr ? ' '+costStr : ''}</span>`;
+      }
+      return `<div class="recipe-item"><span class="recipe-res${cls}">${esc(pName)}${badge}</span><span class="recipe-count">×${fmt(pCount)}</span></div>`;
+    }).join('');
+  }
+
+  let allResHtml = '';
+  let toggleHtml = '';
+  if (hasCraftable) {
+    const flat = flattenResources(name, 1, new Set());
+    allResHtml = Object.entries(flat)
+      .sort((a, b) => b[1] - a[1])
+      .map(([rName, rCount]) => `<div class="recipe-item"><span class="recipe-res">${esc(rName)}</span><span class="recipe-count">×${fmt(rCount)}</span></div>`)
+      .join('');
+    toggleHtml = `<div class="recipe-toggle">
+    <button class="recipe-tab on" onclick="setRecipeView(this,'comp')">Components</button>
+    <button class="recipe-tab" onclick="setRecipeView(this,'all')">All Resources</button>
+  </div>`;
+  }
+
+  return `<div class="card-back">
+  <div class="recipe-header">
+    <span class="recipe-title">Recipe</span>
+    <span class="recipe-meta">${esc(meta)}</span>
+  </div>
+  ${toggleHtml}
+  <div class="recipe-list recipe-components">${compHtml}</div>
+  ${hasCraftable ? `<div class="recipe-list recipe-all-res">${allResHtml}</div>` : ''}
+  <div class="card-foot"><div class="qbtns"><button class="qbtn" onclick="flipCard(this)">&#8592; Back</button></div></div>
+</div>`;
+}
+
 function toggleVaultedState(name) {
   const k = 'wf-resurgence:' + name;
   if (progress[k]) delete progress[k];
@@ -1319,7 +1442,9 @@ function buildCard(tab, name, cat, obtain, maxRank, xpPL, tradable, compFor) {
         : `<button class="card-vaulted" onclick="toggleVaultedState('${ename}')">Vaulted</button>`)
     : '';
   const incarnonTag = incarnonGenesis ? `<a class="card-incarnon${isIncAcq?' on':''}" href="${esc(wikiUrl(incarnonGenesis))}" target="_blank" rel="noopener">Incarnon</a>` : '';
-  return `<div class="card${cardCls ? ' '+cardCls : ''}">`
+  const hasRecipe = BLUEPRINTS.has(name);
+  return `<div class="card${cardCls ? ' '+cardCls : ''}">
+<div class="card-front">
   <div class="card-top">
     <div class="card-name"><a href="${esc(wikiUrl(name))}" target="_blank" rel="noopener">${esc(name)}</a></div>
     <div style="display:flex;gap:3px;flex-shrink:0;align-items:center">${incarnonTag}${tradable ? `<a class="card-tradable" href="${esc(marketUrl(name))}" target="_blank" rel="noopener">Tradable</a>` : ''}${vaultedTag}${compTag}${circuitTag}<div class="card-cat">${esc(cat)}</div></div>
@@ -1336,12 +1461,15 @@ function buildCard(tab, name, cat, obtain, maxRank, xpPL, tradable, compFor) {
   <div class="card-foot">
     <div class="card-xp"><span>${fmt(xp)}</span> / ${fmt(maxXP)} XP</div>
     <div class="qbtns">
+      ${hasRecipe ? `<button class="qbtn rec" onclick="flipCard(this)">Recipe</button>` : ''}
       ${showAcq && rank === 0 ? `<button class="qbtn aq${isAcq?' on':''}" onclick="toggleAcquired('${tab}','${ename}')">Acq</button>` : ''}
       ${incarnonGenesis ? `<button class="qbtn inc${isIncAcq?' on':''}" onclick="toggleIncarnon('${tab}','${ename}')">Incarnon Owned</button>` : ''}
       <button class="qbtn mx" onclick="setRank('${tab}','${ename}',${maxRank})">Max</button>
       <button class="qbtn zr" onclick="setRank('${tab}','${ename}',0)">0</button>
     </div>
   </div>
+</div>
+${hasRecipe ? buildRecipeBack(name) : ''}
 </div>`;
 }
 
@@ -1371,7 +1499,9 @@ function buildListRow(tab, name, cat, obtain, maxRank, xpPL, tradable, compFor) 
         : `<button class="card-vaulted" onclick="toggleVaultedState('${ename}')">Vaulted</button>`)
     : '';
   const incarnonTag = incarnonGenesis ? `<a class="card-incarnon${isIncAcq?' on':''}" href="${esc(wikiUrl(incarnonGenesis))}" target="_blank" rel="noopener">Incarnon</a>` : '';
+  const hasRecipe = BLUEPRINTS.has(name);
   return `<div class="card list-row${cardCls ? ' '+cardCls : ''}">
+<div class="card-front">
   <div class="list-name-col">
     <div class="card-name"><a href="${esc(wikiUrl(name))}" target="_blank" rel="noopener">${esc(name)}</a></div>
     <div class="list-badges">${incarnonTag}${tradable ? `<a class="card-tradable" href="${esc(marketUrl(name))}" target="_blank" rel="noopener">Tradable</a>` : ''}${vaultedTag}${compTag}${circuitTag}<div class="card-cat">${esc(cat)}</div></div>
@@ -1387,11 +1517,14 @@ function buildListRow(tab, name, cat, obtain, maxRank, xpPL, tradable, compFor) 
   </div>
   <div class="card-xp"><span>${fmt(xp)}</span> / ${fmt(maxXP)} XP</div>
   <div class="qbtns">
+    ${hasRecipe ? `<button class="qbtn rec" onclick="flipCard(this)">Recipe</button>` : ''}
     ${showAcq && rank === 0 ? `<button class="qbtn aq${isAcq?' on':''}" onclick="toggleAcquired('${tab}','${ename}')">Acq</button>` : ''}
     ${incarnonGenesis ? `<button class="qbtn inc${isIncAcq?' on':''}" onclick="toggleIncarnon('${tab}','${ename}')">Incarnon Owned</button>` : ''}
     <button class="qbtn mx" onclick="setRank('${tab}','${ename}',${maxRank})">Max</button>
     <button class="qbtn zr" onclick="setRank('${tab}','${ename}',0)">0</button>
   </div>
+</div>
+${hasRecipe ? buildRecipeBack(name) : ''}
 </div>`;
 }
 

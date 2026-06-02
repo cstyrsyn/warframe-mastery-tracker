@@ -15,5 +15,9 @@ dev/Download/
 dev/Import/*.xlsx
 dev/Import/*.ps1
 
-# npm — xlsx bundle is vendored to Import/xlsx.full.min.js
+# npm packages
+dev/node_modules/
 dev/Import/node_modules/
+
+# Backup files
+data.js.bak
