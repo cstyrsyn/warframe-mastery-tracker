@@ -1,4 +1,4 @@
-// ═══════════════════════════════════════════════════════════════
+﻿// ═══════════════════════════════════════════════════════════════
 // WARFRAME MASTERY TRACKER — DATA FILE
 // ═══════════════════════════════════════════════════════════════
 //
@@ -62,10 +62,10 @@ const INCARNON_WEAPONS = new Map([
   ['Braton','Braton Incarnon Genesis'],
   ['Braton Vandal','Braton Incarnon Genesis'],
   ['Braton Prime','Braton Incarnon Genesis'],
-  ['MK1-Braton','Braton Incarnon Genesis'],
+  ['Mk1-Braton','Braton Incarnon Genesis'],
   ['Paris','Paris Incarnon Genesis'],
   ['Paris Prime','Paris Incarnon Genesis'],
-  ['MK1-Paris','Paris Incarnon Genesis'],
+  ['Mk1-Paris','Paris Incarnon Genesis'],
   ['Boar','Boar Incarnon Genesis'],
   ['Boar Prime','Boar Incarnon Genesis'],
   ['Gorgon','Gorgon Incarnon Genesis'],
@@ -77,7 +77,7 @@ const INCARNON_WEAPONS = new Map([
   ['Strun','Strun Incarnon Genesis'],
   ['Strun Wraith','Strun Incarnon Genesis'],
   ['Strun Prime','Strun Incarnon Genesis'],
-  ['MK1-Strun','Strun Incarnon Genesis'],
+  ['Mk1-Strun','Strun Incarnon Genesis'],
   ['Boltor','Boltor Incarnon Genesis'],
   ['Telos Boltor','Boltor Incarnon Genesis'],
   ['Boltor Prime','Boltor Incarnon Genesis'],
@@ -97,13 +97,13 @@ const INCARNON_WEAPONS = new Map([
   ['Lato Vandal','Lato Incarnon Genesis'],
   ['Lato Prime','Lato Incarnon Genesis'],
   ['Kunai','Kunai Incarnon Genesis'],
-  ['MK1-Kunai','Kunai Incarnon Genesis'],
+  ['Mk1-Kunai','Kunai Incarnon Genesis'],
   ['Gammacor','Gammacor Incarnon Genesis'],
   ['Synoid Gammacor','Gammacor Incarnon Genesis'],
   ['Angstrum','Angstrum Incarnon Genesis'],
   ['Prisma Angstrum','Angstrum Incarnon Genesis'],
   ['Furis','Furis Incarnon Genesis'],
-  ['MK1-Furis','Furis Incarnon Genesis'],
+  ['Mk1-Furis','Furis Incarnon Genesis'],
   ['Bronco','Bronco Incarnon Genesis'],
   ['Bronco Prime','Bronco Incarnon Genesis'],
   ['Dual Toxocyst','Dual Toxocyst Incarnon Genesis'],
@@ -123,10 +123,10 @@ const INCARNON_WEAPONS = new Map([
   ['Anku','Anku Incarnon Genesis'],
   ['Bo','Bo Incarnon Genesis'],
   ['Bo Prime','Bo Incarnon Genesis'],
-  ['MK1-Bo','Bo Incarnon Genesis'],
+  ['Mk1-Bo','Bo Incarnon Genesis'],
   ['Furax','Furax Incarnon Genesis'],
   ['Furax Wraith','Furax Incarnon Genesis'],
-  ['MK1-Furax','Furax Incarnon Genesis'],
+  ['Mk1-Furax','Furax Incarnon Genesis'],
   ['Magistar','Magistar Incarnon Genesis'],
   ['Sancti Magistar','Magistar Incarnon Genesis'],
   ['Ceramic Dagger','Ceramic Dagger Incarnon Genesis'],
@@ -142,6 +142,196 @@ const INCARNON_WEAPONS = new Map([
 
 // ── BLUEPRINT COMPONENTS ─────────────────────────────────────────
 // Maps blueprint name → [credits, craftTime_s, [[partName, count, type?], ...]]
+const INCARNON_REQUIREMENTS = new Map([
+  ["Ack & Brunt Incarnon Genesis",[["Pathos Clamp",20],["Dracroot",70],["Ariette Scale",300]]],
+  ["Angstrum Incarnon Genesis",[["Pathos Clamp",20],["Ueymag",70],["Lamentus",80]]],
+  ["Anku Incarnon Genesis",[["Pathos Clamp",20],["Ueymag",70],["Ariette Scale",300]]],
+  ["Atomos Incarnon Genesis",[["Pathos Clamp",20],["Yao Shrub",70],["Lamentus",80]]],
+  ["Bo Incarnon Genesis",[["Pathos Clamp",20],["Dracroot",70],["Kovnik",80]]],
+  ["Boar Incarnon Genesis",[["Pathos Clamp",20],["Rune Marrow",60],["Tasoma Extract",60]]],
+  ["Boltor Incarnon Genesis",[["Pathos Clamp",20],["Rune Marrow",60],["Silphsela",60]]],
+  ["Braton Incarnon Genesis",[["Pathos Clamp",20],["Rune Marrow",60],["Tasoma Extract",60]]],
+  ["Bronco Incarnon Genesis",[["Pathos Clamp",20],["Rune Marrow",60],["Silphsela",60]]],
+  ["Burston Incarnon Genesis",[["Pathos Clamp",20],["Rune Marrow",60],["Maw Fang",20]]],
+  ["Ceramic Dagger Incarnon Genesis",[["Pathos Clamp",20],["Dracroot",70],["Connla Sprout",80]]],
+  ["Cestra Incarnon Genesis",[["Pathos Clamp",20],["Saggen Pearl",150],["Kovnik",80]]],
+  ["Dera Incarnon Genesis",[["Pathos Clamp",20],["Eevani",80],["Ueymag",70]]],
+  ["Despair Incarnon Genesis",[["Pathos Clamp",20],["Silphsela",60],["Yao Shrub",70]]],
+  ["Dread Incarnon Genesis",[["Pathos Clamp",20],["Rune Marrow",60],["Tasoma Extract",60]]],
+  ["Dual Ichor Incarnon Genesis",[["Pathos Clamp",20],["Rune Marrow",60],["Kovnik",80]]],
+  ["Dual Toxocyst Incarnon Genesis",[["Pathos Clamp",20],["Yao Shrub",70],["Eevani",80]]],
+  ["Furax Incarnon Genesis",[["Pathos Clamp",20],["Dracroot",70],["Ariette Scale",300]]],
+  ["Furis Incarnon Genesis",[["Pathos Clamp",20],["Yao Shrub",70],["Lamentus",80]]],
+  ["Gammacor Incarnon Genesis",[["Pathos Clamp",20],["Ueymag",70],["Lamentus",80]]],
+  ["Gorgon Incarnon Genesis",[["Pathos Clamp",20],["Rune Marrow",60],["Tasoma Extract",60]]],
+  ["Hate Incarnon Genesis",[["Pathos Clamp",20],["Dracroot",70],["Maw Fang",20]]],
+  ["Kunai Incarnon Genesis",[["Pathos Clamp",20],["Yao Shrub",70],["Eevani",80]]],
+  ["Lato Incarnon Genesis",[["Pathos Clamp",20],["Yao Shrub",70],["Nacreous Pebble",100]]],
+  ["Latron Incarnon Genesis",[["Pathos Clamp",20],["Rune Marrow",60],["Maw Fang",20]]],
+  ["Magistar Incarnon Genesis",[["Pathos Clamp",20],["Dracroot",70],["Aggristone",150]]],
+  ["Miter Incarnon Genesis",[["Pathos Clamp",20],["Rune Marrow",60],["Tasoma Extract",60]]],
+  ["Nami Solo Incarnon Genesis",[["Pathos Clamp",20],["Dracroot",70],["Aggristone",150]]],
+  ["Okina Incarnon Genesis",[["Pathos Clamp",20],["Maw Fang",20],["Lamentus",80]]],
+  ["Paris Incarnon Genesis",[["Pathos Clamp",20],["Rune Marrow",60],["Silphsela",60]]],
+  ["Sibear Incarnon Genesis",[["Pathos Clamp",20],["Dracroot",70],["Connla Sprout",80]]],
+  ["Sicarus Incarnon Genesis",[["Pathos Clamp",20],["Nacreous Pebble",100],["Aggristone",150]]],
+  ["Skana Incarnon Genesis",[["Pathos Clamp",20],["Dracroot",70],["Connla Sprout",80]]],
+  ["Soma Incarnon Genesis",[["Pathos Clamp",20],["Rune Marrow",60],["Silphsela",60]]],
+  ["Strun Incarnon Genesis",[["Pathos Clamp",20],["Rune Marrow",60],["Tasoma Extract",60]]],
+  ["Sybaris Incarnon Genesis",[["Pathos Clamp",20],["Saggen Pearl",150],["Ueymag",70]]],
+  ["Torid Incarnon Genesis",[["Pathos Clamp",20],["Rune Marrow",60],["Maw Fang",20]]],
+  ["Vasto Incarnon Genesis",[["Pathos Clamp",20],["Yao Shrub",70],["Saggen Pearl",150]]],
+  ["Zylok Incarnon Genesis",[["Pathos Clamp",20],["Yao Shrub",70],["Nacreous Pebble",100]]],
+]);
+
+// Maps blueprint/item name → {currencyName: amount} for vendor-purchased blueprints.
+// Keys are the full item or component name as it appears in dev/Import/currencies/ CSVs.
+const CURRENCIES = new Map([
+  // Amanata — Fate Pearl
+  ["Amanata Blueprint",{"Fate Pearl":5}],
+  ["Amanata Blade Blueprint",{"Fate Pearl":14}],
+  ["Amanata Handle",{"Fate Pearl":14}],
+  // Arbucep — Fergolyte
+  ["Arbucep Blueprint",{"Fergolyte":220}],
+  ["Arbucep Barrel Blueprint",{"Fergolyte":150}],
+  ["Arbucep Receiver Blueprint",{"Fergolyte":150}],
+  ["Arbucep Stock Blueprint",{"Fergolyte":150}],
+  // Argo & Vel — Pathos Clamp
+  ["Argo & Vel",{"Pathos Clamp":60}],
+  // Azothane — Pathos Clamp
+  ["Azothane",{"Pathos Clamp":50}],
+  // Citrine — Belric Crystal Fragment + Rania Crystal Fragment
+  ["Citrine Blueprint",{"Belric Crystal Fragment":500,"Rania Crystal Fragment":500}],
+  ["Citrine Chassis",{"Belric Crystal Fragment":350,"Rania Crystal Fragment":350}],
+  ["Citrine Neuroptics",{"Belric Crystal Fragment":350,"Rania Crystal Fragment":350}],
+  ["Citrine Systems",{"Belric Crystal Fragment":300,"Rania Crystal Fragment":350}],
+  // Corufell — Belric Crystal Fragment + Rania Crystal Fragment
+  ["Corufell Blueprint",{"Belric Crystal Fragment":300,"Rania Crystal Fragment":500}],
+  ["Corufell Barrel",{"Belric Crystal Fragment":150,"Rania Crystal Fragment":250}],
+  ["Corufell Handle",{"Belric Crystal Fragment":150,"Rania Crystal Fragment":250}],
+  ["Corufell Receiver",{"Belric Crystal Fragment":150,"Rania Crystal Fragment":250}],
+  // Dagath — Vainthorn
+  ["Dagath Chassis",{"Vainthorn":34}],
+  ["Dagath Neuroptics",{"Vainthorn":34}],
+  ["Dagath Systems",{"Vainthorn":34}],
+  // Dante — Vessel Capillary
+  ["Dante Blueprint",{"Vessel Capillary":270}],
+  ["Dante Chassis",{"Vessel Capillary":90}],
+  ["Dante Neuroptics",{"Vessel Capillary":90}],
+  ["Dante Systems",{"Vessel Capillary":90}],
+  // Dorrclave — Vainthorn
+  ["Dorrclave Blade",{"Vainthorn":20}],
+  ["Dorrclave Hilt",{"Vainthorn":20}],
+  ["Dorrclave Hook",{"Vainthorn":20}],
+  ["Dorrclave String",{"Vainthorn":20}],
+  // Edun — Pathos Clamp
+  ["Edun",{"Pathos Clamp":50}],
+  // Enkaus — Atramentum
+  ["Enkaus Blueprint",{"Atramentum":1200}],
+  ["Enkaus Barrel Blueprint",{"Atramentum":400}],
+  ["Enkaus Receiver Blueprint",{"Atramentum":400}],
+  ["Enkaus Stock Blueprint",{"Atramentum":400}],
+  // Follie — Atramentum
+  ["Follie Blueprint",{"Atramentum":1200}],
+  ["Follie Chassis",{"Atramentum":400}],
+  ["Follie Neuroptics",{"Atramentum":400}],
+  ["Follie Systems",{"Atramentum":400}],
+  // Galariak Prime — Maphica
+  ["Galariak Prime Blade Blueprint",{"Maphica":25}],
+  ["Galariak Prime Blueprint",{"Maphica":35}],
+  ["Galariak Prime Handle Blueprint",{"Maphica":25}],
+  // Higasa — Fate Pearl
+  ["Higasa Barrel",{"Fate Pearl":14}],
+  ["Higasa Blueprint",{"Fate Pearl":5}],
+  ["Higasa Receiver",{"Fate Pearl":14}],
+  ["Higasa Stock",{"Fate Pearl":14}],
+  // Koumei — Fate Pearl
+  ["Koumei Blueprint",{"Fate Pearl":30}],
+  ["Koumei Chassis",{"Fate Pearl":24}],
+  ["Koumei Neuroptics",{"Fate Pearl":24}],
+  ["Koumei Systems",{"Fate Pearl":24}],
+  // Kullervo — Kullervo's Bane
+  ["Kullervo Blueprint",{"Kullervo's Bane":15}],
+  ["Kullervo Chassis",{"Kullervo's Bane":9}],
+  ["Kullervo Neuroptics",{"Kullervo's Bane":9}],
+  ["Kullervo Systems",{"Kullervo's Bane":9}],
+  // Nokko — Fergolyte
+  ["Nokko Blueprint",{"Fergolyte":240}],
+  ["Nokko Chassis",{"Fergolyte":160}],
+  ["Nokko Neuroptics",{"Fergolyte":160}],
+  ["Nokko Systems",{"Fergolyte":160}],
+  // Onos — Vessel Capillary
+  ["Onos Blueprint",{"Vessel Capillary":360}],
+  // Oraxia — Scuttler Husk
+  ["Oraxia Blueprint",{"Scuttler Husk":60}],
+  ["Oraxia Chassis",{"Scuttler Husk":9}],
+  ["Oraxia Neuroptics",{"Scuttler Husk":9}],
+  ["Oraxia Systems",{"Scuttler Husk":9}],
+  // Perigale — Lua Thrax Plasm
+  ["Perigale",{"Lua Thrax Plasm":50}],
+  // Rauta — Kullervo's Bane
+  ["Rauta Barrel",{"Kullervo's Bane":6}],
+  ["Rauta Blueprint",{"Kullervo's Bane":12}],
+  ["Rauta Receiver",{"Kullervo's Bane":6}],
+  ["Rauta Stock",{"Kullervo's Bane":6}],
+  // Riot-848 — Beating Heartstrings
+  ["Riot-848 Barrel",{"Beating Heartstrings":60}],
+  ["Riot-848 Blueprint",{"Beating Heartstrings":120}],
+  ["Riot-848 Receiver",{"Beating Heartstrings":60}],
+  ["Riot-848 Stock",{"Beating Heartstrings":60}],
+  // Ruvox — Vessel Capillary
+  ["Ruvox Blade",{"Vessel Capillary":45}],
+  ["Ruvox Blueprint",{"Vessel Capillary":260}],
+  ["Ruvox Glove",{"Vessel Capillary":45}],
+  // Sagek Prime — Maphica
+  ["Sagek Prime Barrel Blueprint",{"Maphica":25}],
+  ["Sagek Prime Blueprint",{"Maphica":35}],
+  ["Sagek Prime Receiver Blueprint",{"Maphica":25}],
+  // Sampotes — Pathos Clamp
+  ["Sampotes",{"Pathos Clamp":60}],
+  // Sarofang — Lua Thrax Plasm
+  ["Sarofang",{"Lua Thrax Plasm":50}],
+  // Scyotid — Scuttler Husk
+  ["Scyotid Barrel",{"Scuttler Husk":12}],
+  ["Scyotid Blueprint",{"Scuttler Husk":48}],
+  ["Scyotid Gauntlet",{"Scuttler Husk":12}],
+  // Spinnerex — Scuttler Husk
+  ["Spinnerex Blade",{"Scuttler Husk":16}],
+  ["Spinnerex Blueprint",{"Scuttler Husk":48}],
+  ["Spinnerex Handle",{"Scuttler Husk":16}],
+  ["Spinnerex String",{"Scuttler Husk":16}],
+  // Steflos — Belric Crystal Fragment + Rania Crystal Fragment
+  ["Steflos Barrel",{"Belric Crystal Fragment":250,"Rania Crystal Fragment":150}],
+  ["Steflos Blueprint",{"Belric Crystal Fragment":500,"Rania Crystal Fragment":300}],
+  ["Steflos Receiver",{"Belric Crystal Fragment":250,"Rania Crystal Fragment":150}],
+  ["Steflos Stock",{"Belric Crystal Fragment":250,"Rania Crystal Fragment":150}],
+  // Syam — Pathos Clamp
+  ["Syam",{"Pathos Clamp":50}],
+  // Temple — Beating Heartstrings
+  ["Temple Blueprint",{"Beating Heartstrings":195}],
+  ["Temple Chassis",{"Beating Heartstrings":65}],
+  ["Temple Neuroptics",{"Beating Heartstrings":65}],
+  ["Temple Systems",{"Beating Heartstrings":65}],
+  // Thalys — Scuttler Husk
+  ["Thalys",{"Scuttler Husk":96}],
+  // Uriel — Maphica
+  ["Uriel Blueprint",{"Maphica":75}],
+  ["Uriel Chassis",{"Maphica":25}],
+  ["Uriel Neuroptics",{"Maphica":25}],
+  ["Uriel Systems",{"Maphica":25}],
+  // Vinquibus — Maphica
+  ["Vinquibus Barrel Blueprint",{"Maphica":25}],
+  ["Vinquibus Blade Blueprint",{"Maphica":25}],
+  ["Vinquibus Blueprint",{"Maphica":35}],
+  ["Vinquibus Receiver Blueprint",{"Maphica":25}],
+  ["Vinquibus Stock Blueprint",{"Maphica":25}],
+  // Voruna — Lua Thrax Plasm
+  ["Voruna Blueprint",{"Lua Thrax Plasm":50}],
+  ["Voruna Chassis",{"Lua Thrax Plasm":25}],
+  ["Voruna Neuroptics",{"Lua Thrax Plasm":25}],
+  ["Voruna Systems",{"Lua Thrax Plasm":25}],
+]);
+
 const BLUEPRINTS = new Map([
   ["AX-52",[25000,43200,[["Techrot Motherboard",5,"Resource"],["Techrot Chitin",25,"Resource"],["Efervon Sample",60,"Resource"],["Höllvanian Pitchweave Fragment",60,"Resource"]]]],
   ["Acceltra",[25000,86400,[["Neurodes",4,"Resource"],["Hexenon",200,"Resource"],["Plastids",925,"Resource"],["Nano Spores",8000,"Resource"]]]],
@@ -1613,9 +1803,9 @@ const PRIMARY = [
   ["Torid","Launchers","Clan: Bio Lab",30,100],
   ["Zarr","Launchers","Market",30,100,0,"Drakgoon"],
   ["Vinquibus","Bayonets","Mission: The Descendia",30,100],
-  ["MK1-Braton","MK1","Market",30,100],
-  ["MK1-Paris","MK1","Market",30,100],
-  ["MK1-Strun","MK1","Market",30,100],
+  ["Mk1-Braton","MK1","Market",30,100],
+  ["Mk1-Paris","MK1","Market",30,100],
+  ["Mk1-Strun","MK1","Market",30,100],
   // ── Coda (maxRank 40) ──
   ["Coda Bassocyst","Coda","Syndicate: The Hex (Eleanor)",40,100],
   ["Coda Bubonico","Coda","Syndicate: The Hex (Eleanor)",40,100],
@@ -1641,6 +1831,7 @@ const PRIMARY = [
   ["Tenet Ferrox","Tenet","Sister of Parvos",40,100],
   ["Tenet Flux Rifle","Tenet","Sister of Parvos",40,100],
   ["Tenet Glaxion","Tenet","Sister of Parvos",40,100],
+  ["Tenet Quanta","Tenet","Sister of Parvos",40,100],
   ["Tenet Tetra","Tenet","Sister of Parvos",40,100],
   // ── Prime ──
   ["Acceltra Prime","Prime","Relics",30,100,1],
@@ -1780,8 +1971,8 @@ const SECONDARY = [
   ["Scyotid","Thrown","Mission: Isleweaver",30,100],
   ["Spira","Thrown","Market",30,100],
   ["Talons","Thrown","Clan: Tenno Lab",30,100],
-  ["MK1-Furis","MK1","Market",30,100],
-  ["MK1-Kunai","MK1","Market",30,100],
+  ["Mk1-Furis","MK1","Market",30,100],
+  ["Mk1-Kunai","MK1","Market",30,100],
   ["Catchmoon","Kitgun","Syndicate: Solaris United",30,100],
   ["Gaze","Kitgun","Syndicate: Solaris United",30,100],
   ["Rattleguts","Kitgun","Syndicate: Solaris United",30,100],
@@ -1985,8 +2176,8 @@ const MELEE = [
   ["Shaku","Tonfa","Clan: Tenno Lab",30,100],
   ["Tonkkatt","Tonfa","Ghoul Purge Bounties / Disruption Olympus (Mars)",30,100],
   ["Telos Boltace","Tonfa","Syndicate: Arbiters of Hexis",30,100,1],
-  ["MK1-Bo","MK1","Market",30,100],
-  ["MK1-Furax","MK1","Market",30,100],
+  ["Mk1-Bo","MK1","Market",30,100],
+  ["Mk1-Furax","MK1","Market",30,100],
   ["Anku","Scythe","Clan: Tenno Lab",30,100],
   ["Caustacyst","Scythe","Clan: Bio Lab",30,100],
   ["Ether Reaper","Scythe","Market",30,100],

@@ -641,6 +641,37 @@ body {
   font-size: 11px;
   text-align: center;
 }
+
+/* ── CHECKLIST ── */
+#checklist-view { display: none; padding: 16px; max-width: 920px; margin: 0 auto; }
+.cl-section { background: var(--surface2); border: 1px solid var(--border-soft); border-radius: 8px; overflow: hidden; margin-bottom: 16px; }
+.cl-section-hdr { background: var(--surface3); padding: 7px 14px; font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text-muted); border-bottom: 1px solid var(--border-soft); }
+.cl-res-row { display: grid; grid-template-columns: 1fr 70px 30px 72px 80px; align-items: center; gap: 8px; padding: 5px 14px; border-bottom: 1px solid var(--border-soft); font-size: 12px; }
+.cl-res-row:last-child { border-bottom: none; }
+.cl-res-row.cl-res-done { opacity: .4; }
+.cl-res-total { color: var(--text-muted); text-align: right; }
+.cl-res-lbl { font-size: 11px; color: var(--text-muted); text-align: right; }
+.cl-res-input { width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 4px; color: var(--text); font-size: 12px; padding: 2px 5px; text-align: right; box-sizing: border-box; }
+.cl-res-input:focus { border-color: var(--gold-dim); outline: none; }
+.cl-res-need { font-size: 11px; font-weight: 600; text-align: right; color: var(--text-dim); }
+.cl-res-need.cl-done { color: var(--green); }
+.cl-item { border-bottom: 1px solid var(--border-soft); }
+.cl-item:last-child { border-bottom: none; }
+.cl-item-hdr { display: flex; align-items: center; gap: 10px; padding: 9px 14px; }
+.cl-item-name { font-size: 13px; font-weight: 600; color: var(--text); text-decoration: none; flex: 1; }
+.cl-item-name:hover { color: var(--gold); }
+.cl-acq-tag { font-size: 10px; color: var(--green); border: 1px solid var(--green); border-radius: 3px; padding: 1px 5px; flex-shrink: 0; }
+.cl-item-btns { display: flex; gap: 5px; flex-shrink: 0; }
+.cl-relics { border-top: 1px solid var(--border-soft); padding: 8px 14px 10px; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 3px 16px; background: var(--surface); }
+.cl-relic-row { display: flex; gap: 8px; align-items: center; font-size: 11px; padding: 2px 0; }
+.cl-part { color: var(--text-muted); min-width: 90px; flex-shrink: 0; }
+.cl-relic-name { flex: 1; }
+.cl-rar-0 { color: #aaa; }
+.cl-rar-1 { color: #6aaeee; }
+.cl-rar-2 { color: var(--gold); }
+.cl-relic-row.cl-vaulted { opacity: .5; }
+.cl-vaulted-tag { font-size: 10px; color: var(--text-muted); }
+.qbtn.cl.on { background: var(--gold-dim); color: #000; border-color: var(--gold-dim); }
 </style>
 </head>
 <body>
@@ -690,6 +721,7 @@ body {
   <div class="tab" data-tab="starChart">Star Chart</div>
   <div class="tab" data-tab="mods">Mods</div>
   <div class="tab" data-tab="arcanes">Arcanes</div>
+  <div class="tab" data-tab="checklist">Checklist</div>
 </div>
 
 <div id="ctrl">
@@ -721,6 +753,7 @@ body {
   <div id="summary"></div>
   <div id="grid"></div>
   <div id="sc"></div>
+  <div id="checklist-view"></div>
 </div>
 
 <!-- Export/Import Modal -->
@@ -843,6 +876,93 @@ const LS_KEY = 'wf-mastery-v1';
 let progress = {};
 let activeTab = 'summary';
 let filters = { notStarted: false, inProgress: false, maxed: false, incarnon: false };
+const searchIndex = {}; // tab → Map<name, lowercased searchable text>
+
+function buildSearchIndex(tab) {
+  const items = TAB_DATA[tab] || [];
+  const idx = new Map();
+  for (const item of items) {
+    const [name, category, obtain] = item;
+    let text = name + '\0' + (category || '') + '\0' + (obtain || '');
+    const bp = BLUEPRINTS.get(name);
+    if (bp) {
+      for (const [pName,,, subCost] of (bp[2] ?? [])) {
+        text += '\0' + pName;
+        if (subCost) {
+          for (const [sName] of (subCost[2] ?? [])) text += '\0' + sName;
+        } else {
+          const subKey = BLUEPRINTS.has(pName) ? pName
+                       : BLUEPRINTS.has(name + ' ' + pName) ? name + ' ' + pName
+                       : BLUEPRINTS.has(name + ' ' + pName.replace(/^Prime\s+/, '')) ? name + ' ' + pName.replace(/^Prime\s+/, '')
+                       : null;
+          if (subKey) for (const [sName] of (BLUEPRINTS.get(subKey)?.[2] ?? [])) text += '\0' + sName;
+        }
+      }
+    }
+    idx.set(name, text.toLowerCase());
+  }
+  searchIndex[tab] = idx;
+}
+
+// ─────────────────────────────────────────────
+// CHECKLIST STATE
+// ─────────────────────────────────────────────
+let checklistItems = new Set(); // "tab\tname" strings
+let checklistOwned = {};        // { resourceName: qty }
+const CL_KEY     = 'wf-checklist';
+const CL_OWN_KEY = 'wf-checklist-owned';
+
+function clKey(tab, name)         { return tab + '\t' + name; }
+function isInChecklist(tab, name) { return checklistItems.has(clKey(tab, name)); }
+
+function loadChecklist() {
+  try { checklistItems = new Set(JSON.parse(localStorage.getItem(CL_KEY) || '[]')); } catch { checklistItems = new Set(); }
+  try { checklistOwned = JSON.parse(localStorage.getItem(CL_OWN_KEY) || '{}'); } catch { checklistOwned = {}; }
+}
+function saveChecklist()      { localStorage.setItem(CL_KEY,     JSON.stringify([...checklistItems])); }
+function saveChecklistOwned() { localStorage.setItem(CL_OWN_KEY, JSON.stringify(checklistOwned)); }
+
+function toggleChecklist(tab, name) {
+  const k = clKey(tab, name);
+  if (checklistItems.has(k)) checklistItems.delete(k);
+  else checklistItems.add(k);
+  saveChecklist();
+  render();
+}
+
+function removeFromChecklist(tab, name) {
+  checklistItems.delete(clKey(tab, name));
+  saveChecklist();
+  renderChecklist();
+}
+
+function markChecklistDone(tab, name) {
+  if (AQ_TABS.has(tab) && getItemRank(tab, name) === 0 && !progress[aqKey(tab, name)]) {
+    progress[aqKey(tab, name)] = true;
+    saveProgress();
+    updateHeader();
+  }
+  checklistItems.delete(clKey(tab, name));
+  saveChecklist();
+  renderChecklist();
+}
+
+function updateChecklistOwned(resource, rawVal) {
+  const qty = Math.max(0, parseInt(rawVal, 10) || 0);
+  if (qty === 0) delete checklistOwned[resource];
+  else checklistOwned[resource] = qty;
+  saveChecklistOwned();
+  for (const row of document.querySelectorAll('#checklist-view .cl-res-row')) {
+    if (row.dataset.clRes !== resource) continue;
+    const total = parseInt(row.dataset.clTotal, 10);
+    const need  = Math.max(0, total - qty);
+    const needEl = row.querySelector('.cl-res-need');
+    needEl.textContent = 'Need: ' + fmt(need);
+    needEl.classList.toggle('cl-done', need === 0);
+    row.classList.toggle('cl-res-done', need === 0);
+  }
+}
+
 let activeCategory = '';
 let activeType = '';
 let activeUse = '';
@@ -935,6 +1055,30 @@ function flattenResources(name, multiplier, visited) {
     }
   }
   return acc;
+}
+
+function flattenCurrencies(name) {
+  if (typeof CURRENCIES === 'undefined') return {};
+  const totals = {};
+  function addEntry(entry, mult) {
+    if (!entry) return;
+    for (const [cur, amt] of Object.entries(entry))
+      totals[cur] = (totals[cur] || 0) + amt * mult;
+  }
+  addEntry(CURRENCIES.get(name), 1);
+  addEntry(CURRENCIES.get(name + ' Blueprint'), 1);
+  const bp = BLUEPRINTS.get(name);
+  if (bp) {
+    const [,,parts] = bp;
+    for (const [pName, pCount] of (parts || [])) {
+      const bare = pName.replace(/^Prime\s+/, '');
+      const candidates = [pName, name + ' ' + pName, name + ' ' + bare, name + ' ' + bare + ' Blueprint'];
+      for (const c of candidates) {
+        if (CURRENCIES.has(c)) { addEntry(CURRENCIES.get(c), pCount); break; }
+      }
+    }
+  }
+  return totals;
 }
 
 function setRecipeView(btn, view) {
@@ -1170,12 +1314,15 @@ function switchTab(tabEl) {
   const isChart   = activeTab === 'starChart';
   const isSummary = activeTab === 'summary';
   const isMods    = activeTab === 'mods';
-  const isSpecial = isChart || isSummary;
+  const isCl      = activeTab === 'checklist';
+  const isSpecial = isChart || isSummary || isCl;
   document.getElementById('summary').classList.toggle('open', isSummary);
+  document.getElementById('checklist-view').style.display = isCl ? 'block' : 'none';
   document.getElementById('grid').style.display     = isSpecial ? 'none' : 'grid';
   document.getElementById('sc').style.display       = isChart   ? 'block' : 'none';
   document.getElementById('bulk-bar').style.display = isSpecial ? 'none' : 'flex';
   document.getElementById('cat-btns').style.display = isSpecial ? 'none' : '';
+  document.getElementById('search').style.display   = isCl ? 'none' : '';
   document.getElementById('fb-ns').style.display    = isSpecial ? 'none' : '';
   document.getElementById('fb-ip').style.display    = isSpecial ? 'none' : '';
   document.getElementById('fb-mx').style.display    = isSpecial ? 'none' : '';
@@ -1498,6 +1645,7 @@ function buildCard(tab, name, cat, obtain, maxRank, xpPL, tradable, compFor) {
     : '';
   const incarnonTag = incarnonGenesis ? `<a class="card-incarnon${isIncAcq?' on':''}" href="${esc(wikiUrl(incarnonGenesis))}" target="_blank" rel="noopener">Incarnon</a>` : '';
   const hasRecipe = BLUEPRINTS.has(name);
+  const inCl = isInChecklist(tab, name);
   return `<div class="card${cardCls ? ' '+cardCls : ''}">
 <div class="card-front">
   <div class="card-top">
@@ -1521,6 +1669,7 @@ function buildCard(tab, name, cat, obtain, maxRank, xpPL, tradable, compFor) {
       ${incarnonGenesis ? `<button class="qbtn inc${isIncAcq?' on':''}" onclick="toggleIncarnon('${tab}','${ename}')">Incarnon Owned</button>` : ''}
       <button class="qbtn mx" onclick="setRank('${tab}','${ename}',${maxRank})">Max</button>
       <button class="qbtn zr" onclick="setRank('${tab}','${ename}',0)">0</button>
+      <button class="qbtn cl${inCl?' on':''}" onclick="toggleChecklist('${tab}','${ename}')" title="Add to Checklist">+List</button>
     </div>
   </div>
 </div>
@@ -1555,6 +1704,7 @@ function buildListRow(tab, name, cat, obtain, maxRank, xpPL, tradable, compFor) 
     : '';
   const incarnonTag = incarnonGenesis ? `<a class="card-incarnon${isIncAcq?' on':''}" href="${esc(wikiUrl(incarnonGenesis))}" target="_blank" rel="noopener">Incarnon</a>` : '';
   const hasRecipe = BLUEPRINTS.has(name);
+  const inCl = isInChecklist(tab, name);
   return `<div class="card list-row${cardCls ? ' '+cardCls : ''}">
 <div class="card-front">
   <div class="list-name-col">
@@ -1577,6 +1727,7 @@ function buildListRow(tab, name, cat, obtain, maxRank, xpPL, tradable, compFor) 
     ${incarnonGenesis ? `<button class="qbtn inc${isIncAcq?' on':''}" onclick="toggleIncarnon('${tab}','${ename}')">Incarnon Owned</button>` : ''}
     <button class="qbtn mx" onclick="setRank('${tab}','${ename}',${maxRank})">Max</button>
     <button class="qbtn zr" onclick="setRank('${tab}','${ename}',0)">0</button>
+    <button class="qbtn cl${inCl?' on':''}" onclick="toggleChecklist('${tab}','${ename}')" title="Add to Checklist">+List</button>
   </div>
 </div>
 ${hasRecipe ? buildRecipeBack(name) : ''}
@@ -1588,12 +1739,16 @@ function render() {
   if (activeTab === 'starChart') { renderStarChart(); return; }
   if (activeTab === 'mods')      { renderMods();      return; }
   if (activeTab === 'arcanes')   { renderArcanes();   return; }
+  if (activeTab === 'checklist') { renderChecklist(); return; }
   const items = TAB_DATA[activeTab] || [];
   const q = document.getElementById('search').value.toLowerCase();
   const cat = activeCategory;
 
+  if (q && !searchIndex[activeTab]) buildSearchIndex(activeTab);
+  const idx = searchIndex[activeTab];
+
   let visible = items.filter(([name, category]) => {
-    if (q && !name.toLowerCase().includes(q) && !category.toLowerCase().includes(q)) return false;
+    if (q && !(idx?.get(name) ?? '').includes(q)) return false;
     if (cat && category !== cat) return false;
     const rank = getItemRank(activeTab, name);
     const maxRank = items.find(i => i[0] === name)?.[3] ?? 30;
@@ -1920,6 +2075,110 @@ function sumHdr(key, label, rightHtml) {
   <span class="sc-group-title"><span class="grp-arrow">${collapsed ? '▶' : '▼'}</span>${label}</span>
   ${rightHtml ? `<span style="color:var(--text-muted);font-weight:400;font-size:10px">${rightHtml}</span>` : ''}
 </div>`;
+}
+
+// ─────────────────────────────────────────────
+// CHECKLIST RENDER
+// ─────────────────────────────────────────────
+const CL_TAB_ORDER = ['warframes','primary','secondary','melee','companions','compWeapons','vehicles','archWeapons','amps','intrinsics'];
+const CL_RARITY    = ['Common','Uncommon','Rare'];
+
+function renderChecklist() {
+  const el = document.getElementById('checklist-view');
+
+  if (checklistItems.size === 0) {
+    el.innerHTML = '<div class="empty" style="padding:40px;text-align:center">No items in checklist.<br>Use <b>+List</b> on any item tile to add it.</div>';
+    return;
+  }
+
+  // Group items by tab
+  const grouped = new Map();
+  for (const key of checklistItems) {
+    const sep = key.indexOf('\t');
+    const tab = key.slice(0, sep), name = key.slice(sep + 1);
+    if (!grouped.has(tab)) grouped.set(tab, []);
+    grouped.get(tab).push(name);
+  }
+
+  // Accumulate resources and currencies
+  const totalRes = {};
+  for (const key of checklistItems) {
+    const name = key.slice(key.indexOf('\t') + 1);
+    const itemRes = flattenResources(name, 1, new Set());
+    const itemCur = flattenCurrencies(name);
+    for (const c of Object.keys(itemCur)) delete itemRes[c];
+    for (const [r, v] of Object.entries(itemRes)) totalRes[r] = (totalRes[r] || 0) + v;
+    for (const [r, v] of Object.entries(itemCur)) totalRes[r] = (totalRes[r] || 0) + v;
+  }
+  const sortedRes = Object.entries(totalRes).sort((a, b) => b[1] - a[1]);
+
+  let html = '';
+
+  // Resources Required section (includes currencies)
+  if (sortedRes.length) {
+    html += `<div class="cl-section">
+<div class="cl-section-hdr">Resources Required</div>
+${sortedRes.map(([rName, total]) => {
+  const owned = checklistOwned[rName] || 0;
+  const need  = Math.max(0, total - owned);
+  return `<div class="cl-res-row${need === 0 ? ' cl-res-done' : ''}" data-cl-res="${esc(rName)}" data-cl-total="${total}">
+  <span class="cl-res-name">${wikiLink(rName)}</span>
+  <span class="cl-res-total">×${fmt(total)}</span>
+  <span class="cl-res-lbl">Have</span>
+  <input class="cl-res-input" type="number" min="0" value="${owned}" oninput="updateChecklistOwned('${jsStr(rName)}',this.value)">
+  <span class="cl-res-need${need === 0 ? ' cl-done' : ''}">Need: ${fmt(need)}</span>
+</div>`;
+}).join('\n')}
+</div>`;
+  }
+
+  // Item sections grouped by tab type
+  for (const tab of CL_TAB_ORDER) {
+    if (!grouped.has(tab)) continue;
+    const label = SUMMARY_LABELS[tab] || tab;
+    let rows = '';
+    for (const name of grouped.get(tab)) {
+      const ename  = jsStr(name);
+      const isAcq  = AQ_TABS.has(tab) && (!!progress[aqKey(tab, name)] || getItemRank(tab, name) > 0);
+
+      // Relic table for items in RELIC_DROPS
+      let relicHtml = '';
+      const relicEntry = typeof RELIC_DROPS !== 'undefined' ? RELIC_DROPS.get(name) : null;
+      if (relicEntry) {
+        const [, partsObj] = relicEntry;
+        const partRows = Object.entries(partsObj).map(([partName, drops]) => {
+          const label = partName.replace(/\s*Blueprint$/i, '').trim();
+          const best  = [...drops].sort((a, b) => {
+            const aV = a[2] === 1 ? 1 : 0, bV = b[2] === 1 ? 1 : 0;
+            return aV !== bV ? aV - bV : a[1] - b[1];
+          })[0];
+          const relicName = RELIC_INDEX[best[0]];
+          const vaulted   = best[2] === 1;
+          return `<div class="cl-relic-row${vaulted ? ' cl-vaulted' : ''}">
+  <span class="cl-part">${esc(label)}</span>
+  <span class="cl-relic-name">${esc(relicName)}</span>
+  <span class="cl-rar-${best[1]}">${esc(CL_RARITY[best[1]])}${vaulted ? ' <span class="cl-vaulted-tag">(Vaulted)</span>' : ''}</span>
+</div>`;
+        }).join('');
+        if (partRows) relicHtml = `<div class="cl-relics">${partRows}</div>`;
+      }
+
+      rows += `<div class="cl-item">
+<div class="cl-item-hdr">
+  <a class="cl-item-name" href="${esc(wikiUrl(name))}" target="_blank" rel="noopener">${esc(name)}</a>
+  ${isAcq ? '<span class="cl-acq-tag">Acquired</span>' : ''}
+  <div class="cl-item-btns">
+    <button class="qbtn" onclick="markChecklistDone('${tab}','${ename}')" title="Mark done &amp; remove">✓ Done</button>
+    <button class="qbtn zr" onclick="removeFromChecklist('${tab}','${ename}')" title="Remove">✕</button>
+  </div>
+</div>
+${relicHtml}
+</div>`;
+    }
+    html += `<div class="cl-section"><div class="cl-section-hdr">${esc(label)}</div>${rows}</div>`;
+  }
+
+  el.innerHTML = html;
 }
 
 function renderSummary() {
@@ -3128,6 +3387,7 @@ function submitAddItem() {
   const it = { tab, name, cat, obtain, maxRank, xpPL, tradable, compFor };
   customItems.push(it);
   _mergeCustomItem(it);
+  delete searchIndex[it.tab];
   saveCustomItems();
   msg.style.color = 'var(--green)';
   msg.textContent = `"${name}" added.`;
@@ -3147,6 +3407,7 @@ function deleteCustomItem(index) {
     const i = arr.findIndex(row => row[0] === it.name && row[7] === true);
     if (i !== -1) arr.splice(i, 1);
   }
+  delete searchIndex[it.tab];
   customItems.splice(index, 1);
   saveCustomItems();
   renderCustomItemsList();
@@ -3262,6 +3523,7 @@ function updateBackupBtn() {
 // ─────────────────────────────────────────────
 loadProgress();
 loadCustomItems();
+loadChecklist();
 const _savedTab = localStorage.getItem('wf-ui-tab');
 if (_savedTab && document.querySelector(`.tab[data-tab="${_savedTab}"]`)) {
   activeTab = _savedTab;
@@ -3269,12 +3531,15 @@ if (_savedTab && document.querySelector(`.tab[data-tab="${_savedTab}"]`)) {
   const _isChart   = activeTab === 'starChart';
   const _isSummary = activeTab === 'summary';
   const _isMods    = activeTab === 'mods';
-  const _isSpecial = _isChart || _isSummary;
+  const _isCl      = activeTab === 'checklist';
+  const _isSpecial = _isChart || _isSummary || _isCl;
   document.getElementById('summary').classList.toggle('open', _isSummary);
+  document.getElementById('checklist-view').style.display = _isCl ? 'block' : 'none';
   document.getElementById('grid').style.display     = _isSpecial ? 'none' : 'grid';
   document.getElementById('sc').style.display       = _isChart   ? 'block' : 'none';
   document.getElementById('bulk-bar').style.display = _isSpecial ? 'none' : 'flex';
   document.getElementById('cat-btns').style.display = _isSpecial ? 'none' : '';
+  document.getElementById('search').style.display   = _isCl ? 'none' : '';
   document.getElementById('fb-ns').style.display    = _isSpecial ? 'none' : '';
   document.getElementById('fb-ip').style.display    = _isSpecial ? 'none' : '';
   document.getElementById('fb-mx').style.display    = _isSpecial ? 'none' : '';

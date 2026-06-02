@@ -19,6 +19,7 @@ A portable, offline web app for tracking Mastery Rank progress in Warframe.
 - **Wiki links** — every item name links directly to its page on the Warframe wiki
 - **Tradable badges** — items that can be traded between players are flagged on their card, with a direct link to the item's listing on warframe.market
 - **Incarnon Genesis tracking** — weapons with an available Incarnon Genesis show an orange badge linking to the wiki page for that genesis; click **Incarnon Owned** on the card to mark it as acquired (badge turns purple). An **Incarnon** filter on the Primary, Secondary, and Melee tabs narrows the list to only weapons with a genesis available
+- **Checklist** — add any item to a personal checklist via the **+** button on its card; the checklist tab aggregates all required resources and currencies in one place with Have/Need tracking
 - **Component tags** — items used as crafting ingredients for other weapons show what they build into
 - **Auto-backup** — optionally sync progress to a local file via the File System Access API
 - **Persistent state** — progress, active tab, UI preferences, and per-tab filter selections are saved to localStorage
@@ -51,6 +52,13 @@ Click the floppy disk icon in the header to link a local save file. Once linked,
 ### Incarnon Genesis Tracking
 Weapons that have an Incarnon Genesis available show an orange **Incarnon** badge on their card. Clicking the badge opens the relevant wiki page. Click the **Incarnon Owned** button in the card footer to mark the genesis as acquired — the badge turns purple. Use the **Incarnon** filter button on the Primary, Secondary, and Melee tabs to show only weapons with a genesis available, and combine it with other filters (e.g. **Not Started**) to identify acquisition targets.
 
+### Checklist
+Click **+** on any item card to add it to the checklist. Switch to the **Checklist** tab to see everything you're working towards.
+
+The **Resources Required** section at the top aggregates all crafting materials and vendor currencies needed across every item on the list. Items that cost a special currency (Pathos Clamp, Fate Pearl, Vessel Capillary, etc.) are included alongside regular crafting resources — each entry appears once regardless of whether it comes from a crafting recipe, a vendor cost, or both. Enter how many you already have in the **Have** field; the **Need** count updates automatically and the row is marked done when fully covered.
+
+Use **✓ Done** on a checklist item to mark it as acquired and remove it. Use **✕** to remove it without marking it done.
+
 ### Filtering and Visibility
 - **Category buttons** (above the card grid on most tabs) filter to a specific subcategory.
 - **Visibility buttons** (Show All / Hide Maxed / etc.) toggle which completion states are shown.
@@ -63,6 +71,7 @@ Weapons that have an Incarnon Genesis available show an orange **Incarnon** badg
 | `data.js` | All item data: names, categories, obtain methods, ranks, and XP values |
 | `Import/xlsx.full.min.js` | Vendored xlsx bundle used by the spreadsheet import feature |
 | `dev/Source/` | Source CSVs that define the content of `data.js` |
+| `dev/Import/currencies/` | CSVs mapping item/component names to vendor currency costs (Pathos Clamp, Fate Pearl, etc.); each file is named after the currency it tracks |
 | `dev/update.js` | Script for adding new items from CSV to `data.js` — see `dev/UPDATE_README.md` |
 | `dev/Build/` | Legacy one-shot build scripts used to generate the initial `data.js` sections |
 | `dev/Download/` | Scripts to download card images from the wiki into `Images/` (gitignored) |
