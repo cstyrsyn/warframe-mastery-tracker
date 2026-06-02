@@ -18,9 +18,10 @@ A portable, offline web app for tracking Mastery Rank progress in Warframe.
 - **Visibility toggles** — hide maxed, acquired, or unowned items per tab
 - **Wiki links** — every item name links directly to its page on the Warframe wiki
 - **Tradable badges** — items that can be traded between players are flagged on their card, with a direct link to the item's listing on warframe.market
+- **Incarnon Genesis tracking** — weapons with an available Incarnon Genesis show an orange badge linking to the wiki page for that genesis; click **Incarnon Owned** on the card to mark it as acquired (badge turns purple). An **Incarnon** filter on the Primary, Secondary, and Melee tabs narrows the list to only weapons with a genesis available
 - **Component tags** — items used as crafting ingredients for other weapons show what they build into
 - **Auto-backup** — optionally sync progress to a local file via the File System Access API
-- **Persistent state** — progress, active tab, and UI preferences are saved to localStorage
+- **Persistent state** — progress, active tab, UI preferences, and per-tab filter selections are saved to localStorage
 
 ## Getting Started
 
@@ -46,6 +47,9 @@ Rank sliders work the same as item cards. Railjack and Drifter trees are shown i
 
 ### Auto-Backup
 Click the floppy disk icon in the header to link a local save file. Once linked, progress is automatically written to that file whenever you make a change. To restore from a backup, use the import button in the same area.
+
+### Incarnon Genesis Tracking
+Weapons that have an Incarnon Genesis available show an orange **Incarnon** badge on their card. Clicking the badge opens the relevant wiki page. Click the **Incarnon Owned** button in the card footer to mark the genesis as acquired — the badge turns purple. Use the **Incarnon** filter button on the Primary, Secondary, and Melee tabs to show only weapons with a genesis available, and combine it with other filters (e.g. **Not Started**) to identify acquisition targets.
 
 ### Filtering and Visibility
 - **Category buttons** (above the card grid on most tabs) filter to a specific subcategory.

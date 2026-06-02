@@ -232,6 +232,16 @@ body {
   white-space: nowrap; flex-shrink: 0; text-decoration: none;
 }
 .card-tradable:hover { background: rgba(74,150,96,0.22); }
+.card-incarnon {
+  font-size: 8px; padding: 2px 5px; border-radius: 3px;
+  background: rgba(208,128,64,0.12); color: var(--orange);
+  border: 1px solid rgba(208,128,64,0.35);
+  text-transform: uppercase; letter-spacing: 0.5px;
+  white-space: nowrap; flex-shrink: 0; text-decoration: none;
+}
+.card-incarnon:hover { background: rgba(208,128,64,0.22); }
+.card-incarnon.on { background: rgba(160,100,220,0.12); color: #b87ce0; border-color: rgba(160,100,220,0.45); }
+.card-incarnon.on:hover { background: rgba(160,100,220,0.22); }
 .card-circuit {
   font-size: 8px; padding: 2px 5px; border-radius: 3px;
   background: rgba(74,180,210,0.1); color: #4ab4d2;
@@ -296,6 +306,9 @@ body {
 .qbtn.aq { color: var(--text-muted); }
 .qbtn.aq.on { color: var(--blue); border-color: var(--blue); background: rgba(74,128,200,0.08); }
 .qbtn.aq:not(.on):hover { color: var(--blue); border-color: rgba(74,128,200,0.5); }
+.qbtn.inc { color: var(--text-muted); }
+.qbtn.inc.on { color: #b87ce0; border-color: rgba(160,100,220,0.7); background: rgba(160,100,220,0.1); }
+.qbtn.inc:not(.on):hover { color: #b87ce0; border-color: rgba(160,100,220,0.4); }
 
 /* ── EMPTY STATE ── */
 .empty { text-align: center; color: var(--text-muted); padding: 48px 20px; grid-column: 1/-1; }
@@ -651,6 +664,7 @@ body {
     <button class="filt-btn" id="fb-ns" onclick="toggleFilt('notStarted',this)">Not Started</button>
     <button class="filt-btn" id="fb-ip" onclick="toggleFilt('inProgress',this)">In Progress</button>
     <button class="filt-btn" id="fb-mx" onclick="toggleFilt('maxed',this)">Maxed</button>
+    <button class="filt-btn" id="fb-incarnon" style="display:none" onclick="toggleFilt('incarnon',this)">Incarnon</button>
     <button class="filt-btn" id="fb-conclave" style="display:none" onclick="toggleConclaveFilter(this)">Conclave</button>
     <button class="filt-btn" id="fb-flawed"   style="display:none" onclick="toggleFlawedFilter(this)">Flawed</button>
     <div id="tab-stat"></div>
@@ -792,7 +806,7 @@ body {
 const LS_KEY = 'wf-mastery-v1';
 let progress = {};
 let activeTab = 'summary';
-let filters = { notStarted: false, inProgress: false, maxed: false };
+let filters = { notStarted: false, inProgress: false, maxed: false, incarnon: false };
 let activeCategory = '';
 let activeType = '';
 let activeUse = '';
@@ -845,6 +859,15 @@ function toggleAcquired(tab, name) {
   progress[k] = !progress[k];
   saveProgress();
   updateHeader();
+  render();
+}
+
+function incarnonKey(tab, name) { return 'inc:' + itemKey(tab, name); }
+function toggleIncarnon(tab, name) {
+  const k = incarnonKey(tab, name);
+  progress[k] = !progress[k];
+  if (!progress[k]) delete progress[k];
+  saveProgress();
   render();
 }
 
@@ -955,7 +978,7 @@ function switchTab(tabEl) {
   activeTab = tabEl.dataset.tab;
   localStorage.setItem('wf-ui-tab', activeTab);
   document.getElementById('search').value = '';
-  filters = { notStarted: false, inProgress: false, maxed: false };
+  filters = { notStarted: false, inProgress: false, maxed: false, incarnon: false };
   activeCategory = '';
   activeType = '';
   activeUse = '';
@@ -963,10 +986,8 @@ function switchTab(tabEl) {
   activeArcaneRarity   = '';
   activeArcaneCategory = '';
   collapsedGroups.clear();
-  document.getElementById('fb-ns').classList.remove('on');
-  document.getElementById('fb-ip').classList.remove('on');
-  document.getElementById('fb-mx').classList.remove('on');
   restoreViewPrefs();
+  restoreFilters();
   populateCatFilter();
   const isChart   = activeTab === 'starChart';
   const isSummary = activeTab === 'summary';
@@ -980,6 +1001,8 @@ function switchTab(tabEl) {
   document.getElementById('fb-ns').style.display    = isSpecial ? 'none' : '';
   document.getElementById('fb-ip').style.display    = isSpecial ? 'none' : '';
   document.getElementById('fb-mx').style.display    = isSpecial ? 'none' : '';
+  const isIncarnon = ['primary','secondary','melee'].includes(activeTab);
+  document.getElementById('fb-incarnon').style.display = isIncarnon ? '' : 'none';
   document.getElementById('fb-conclave').style.display = isMods ? '' : 'none';
   document.getElementById('fb-flawed').style.display   = isMods ? '' : 'none';
   render();
@@ -1229,7 +1252,17 @@ function filterDdOpts(inp, panelId) {
 function toggleFilt(key, btn) {
   filters[key] = !filters[key];
   btn.classList.toggle('on', filters[key]);
+  localStorage.setItem('wf-filt-' + key + '-' + activeTab, filters[key] ? '1' : '');
   render();
+}
+
+const FILT_BTNS = { notStarted: 'fb-ns', inProgress: 'fb-ip', maxed: 'fb-mx', incarnon: 'fb-incarnon' };
+function restoreFilters() {
+  for (const [key, id] of Object.entries(FILT_BTNS)) {
+    filters[key] = !!localStorage.getItem('wf-filt-' + key + '-' + activeTab);
+    const btn = document.getElementById(id);
+    if (btn) btn.classList.toggle('on', filters[key]);
+  }
 }
 
 function toggleGroupView() {
@@ -1271,6 +1304,8 @@ function buildCard(tab, name, cat, obtain, maxRank, xpPL, tradable, compFor) {
   const isAcq = showAcq && !!progress[aqKey(tab, name)];
   const cardCls = isMax ? 'maxed' : isPartial ? 'partial' : isAcq ? 'acquired' : '';
   const ename = jsStr(name);
+  const incarnonGenesis = INCARNON_WEAPONS.get(name);
+  const isIncAcq = incarnonGenesis && !!progress[incarnonKey(tab, name)];
   let compTag = '';
   if (compFor) {
     const parts = compFor.split(/\s*;\s*/).filter(Boolean);
@@ -1283,10 +1318,11 @@ function buildCard(tab, name, cat, obtain, maxRank, xpPL, tradable, compFor) {
         ? `<button class="card-resurgence" onclick="toggleVaultedState('${ename}')">Resurgence</button>`
         : `<button class="card-vaulted" onclick="toggleVaultedState('${ename}')">Vaulted</button>`)
     : '';
+  const incarnonTag = incarnonGenesis ? `<a class="card-incarnon${isIncAcq?' on':''}" href="${esc(wikiUrl(incarnonGenesis))}" target="_blank" rel="noopener">Incarnon</a>` : '';
   return `<div class="card${cardCls ? ' '+cardCls : ''}">`
   <div class="card-top">
     <div class="card-name"><a href="${esc(wikiUrl(name))}" target="_blank" rel="noopener">${esc(name)}</a></div>
-    <div style="display:flex;gap:3px;flex-shrink:0;align-items:center">${tradable ? `<a class="card-tradable" href="${esc(marketUrl(name))}" target="_blank" rel="noopener">Tradable</a>` : ''}${vaultedTag}${compTag}${circuitTag}<div class="card-cat">${esc(cat)}</div></div>
+    <div style="display:flex;gap:3px;flex-shrink:0;align-items:center">${incarnonTag}${tradable ? `<a class="card-tradable" href="${esc(marketUrl(name))}" target="_blank" rel="noopener">Tradable</a>` : ''}${vaultedTag}${compTag}${circuitTag}<div class="card-cat">${esc(cat)}</div></div>
   </div>
   <div class="card-obtain-row"><div class="card-obtain" title="${esc(obtain)}">${esc(obtain)}</div></div>
   <div class="card-row">
@@ -1301,6 +1337,7 @@ function buildCard(tab, name, cat, obtain, maxRank, xpPL, tradable, compFor) {
     <div class="card-xp"><span>${fmt(xp)}</span> / ${fmt(maxXP)} XP</div>
     <div class="qbtns">
       ${showAcq && rank === 0 ? `<button class="qbtn aq${isAcq?' on':''}" onclick="toggleAcquired('${tab}','${ename}')">Acq</button>` : ''}
+      ${incarnonGenesis ? `<button class="qbtn inc${isIncAcq?' on':''}" onclick="toggleIncarnon('${tab}','${ename}')">Incarnon Owned</button>` : ''}
       <button class="qbtn mx" onclick="setRank('${tab}','${ename}',${maxRank})">Max</button>
       <button class="qbtn zr" onclick="setRank('${tab}','${ename}',0)">0</button>
     </div>
@@ -1319,6 +1356,8 @@ function buildListRow(tab, name, cat, obtain, maxRank, xpPL, tradable, compFor) 
   const isAcq = showAcq && !!progress[aqKey(tab, name)];
   const cardCls = isMax ? 'maxed' : isPartial ? 'partial' : isAcq ? 'acquired' : '';
   const ename = jsStr(name);
+  const incarnonGenesis = INCARNON_WEAPONS.get(name);
+  const isIncAcq = incarnonGenesis && !!progress[incarnonKey(tab, name)];
   let compTag = '';
   if (compFor) {
     const parts = compFor.split(/\s*;\s*/).filter(Boolean);
@@ -1331,10 +1370,11 @@ function buildListRow(tab, name, cat, obtain, maxRank, xpPL, tradable, compFor) 
         ? `<button class="card-resurgence" onclick="toggleVaultedState('${ename}')">Resurgence</button>`
         : `<button class="card-vaulted" onclick="toggleVaultedState('${ename}')">Vaulted</button>`)
     : '';
+  const incarnonTag = incarnonGenesis ? `<a class="card-incarnon${isIncAcq?' on':''}" href="${esc(wikiUrl(incarnonGenesis))}" target="_blank" rel="noopener">Incarnon</a>` : '';
   return `<div class="card list-row${cardCls ? ' '+cardCls : ''}">
   <div class="list-name-col">
     <div class="card-name"><a href="${esc(wikiUrl(name))}" target="_blank" rel="noopener">${esc(name)}</a></div>
-    <div class="list-badges">${tradable ? `<a class="card-tradable" href="${esc(marketUrl(name))}" target="_blank" rel="noopener">Tradable</a>` : ''}${vaultedTag}${compTag}${circuitTag}<div class="card-cat">${esc(cat)}</div></div>
+    <div class="list-badges">${incarnonTag}${tradable ? `<a class="card-tradable" href="${esc(marketUrl(name))}" target="_blank" rel="noopener">Tradable</a>` : ''}${vaultedTag}${compTag}${circuitTag}<div class="card-cat">${esc(cat)}</div></div>
   </div>
   <div class="card-obtain-row"><div class="card-obtain" title="${esc(obtain)}">${esc(obtain)}</div></div>
   <div class="card-row">
@@ -1348,6 +1388,7 @@ function buildListRow(tab, name, cat, obtain, maxRank, xpPL, tradable, compFor) 
   <div class="card-xp"><span>${fmt(xp)}</span> / ${fmt(maxXP)} XP</div>
   <div class="qbtns">
     ${showAcq && rank === 0 ? `<button class="qbtn aq${isAcq?' on':''}" onclick="toggleAcquired('${tab}','${ename}')">Acq</button>` : ''}
+    ${incarnonGenesis ? `<button class="qbtn inc${isIncAcq?' on':''}" onclick="toggleIncarnon('${tab}','${ename}')">Incarnon Owned</button>` : ''}
     <button class="qbtn mx" onclick="setRank('${tab}','${ename}',${maxRank})">Max</button>
     <button class="qbtn zr" onclick="setRank('${tab}','${ename}',0)">0</button>
   </div>
@@ -1371,6 +1412,7 @@ function render() {
     if (filters.notStarted && rank !== 0) return false;
     if (filters.inProgress && (rank === 0 || rank === maxRank)) return false;
     if (filters.maxed && rank !== maxRank) return false;
+    if (filters.incarnon && !INCARNON_WEAPONS.has(name)) return false;
     return true;
   });
 
@@ -3048,10 +3090,13 @@ if (_savedTab && document.querySelector(`.tab[data-tab="${_savedTab}"]`)) {
   document.getElementById('fb-ns').style.display    = _isSpecial ? 'none' : '';
   document.getElementById('fb-ip').style.display    = _isSpecial ? 'none' : '';
   document.getElementById('fb-mx').style.display    = _isSpecial ? 'none' : '';
+  const _isIncarnon = ['primary','secondary','melee'].includes(activeTab);
+  document.getElementById('fb-incarnon').style.display = _isIncarnon ? '' : 'none';
   document.getElementById('fb-conclave').style.display = _isMods ? '' : 'none';
   document.getElementById('fb-flawed').style.display   = _isMods ? '' : 'none';
 }
 restoreViewPrefs();
+restoreFilters();
 populateCatFilter();
 updateHeader();
 updateTabStat();
