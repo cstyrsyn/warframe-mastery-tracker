@@ -1038,12 +1038,12 @@ function flattenResources(name, multiplier, visited) {
   if (!bp) return {};
   const [,,parts] = bp;
   const acc = {};
-  for (const [pName, pCount, , subCost] of (parts || [])) {
+  for (const [pName, pCount, pType, subCost] of (parts || [])) {
     const qty = pCount * multiplier;
     if (subCost) {
       const [,,subParts] = subCost;
       for (const [sName, sCount] of (subParts || [])) acc[sName] = (acc[sName] || 0) + sCount * qty;
-    } else {
+    } else if (pType === 'Item') {
       // Warframe components are stored as "Dante Neuroptics" but listed as "Neuroptics" in the parent
       const key = BLUEPRINTS.has(pName) ? pName : BLUEPRINTS.has(name + ' ' + pName) ? name + ' ' + pName : BLUEPRINTS.has(name + ' ' + pName.replace(/^Prime\s+/, '')) ? name + ' ' + pName.replace(/^Prime\s+/, '') : null;
       if (key) {
@@ -1052,6 +1052,8 @@ function flattenResources(name, multiplier, visited) {
       } else {
         acc[pName] = (acc[pName] || 0) + qty;
       }
+    } else {
+      acc[pName] = (acc[pName] || 0) + qty;
     }
   }
   return acc;
