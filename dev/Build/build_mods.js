@@ -1,47 +1,11 @@
-// build_mods.js — generates MODS and MOD_DESC arrays from warframe_mods_v3.csv
+﻿// build_mods.js — generates MODS and MOD_DESC arrays from warframe_mods_v3.csv
 'use strict';
 const fs   = require('fs');
 const path = require('path');
+const { parseCSVLine, cleanStr, jsEsc } = require('../lib/csv.js');
 
 const csv = fs.readFileSync(path.join(__dirname, '..', 'warframe_mods_v3.csv'), 'utf8');
 const lines = csv.split(/\r?\n/).filter(l => l.trim());
-
-function parseCSVLine(line) {
-  const result = [];
-  let field = '';
-  let inQuotes = false;
-  for (let i = 0; i < line.length; i++) {
-    const ch = line[i];
-    if (ch === '"') {
-      if (inQuotes && line[i + 1] === '"') { field += '"'; i++; }
-      else inQuotes = !inQuotes;
-    } else if (ch === ',' && !inQuotes) {
-      result.push(field);
-      field = '';
-    } else {
-      field += ch;
-    }
-  }
-  result.push(field);
-  return result;
-}
-
-function jsEsc(s) {
-  return s
-    .replace(/\\/g, '\\\\')
-    .replace(/'/g, "\\'")
-    .replace(/\r/g, '')
-    .replace(/\n/g, '');
-}
-
-function cleanStr(s) {
-  // Normalize various Unicode space/separator chars to regular space, then strip remaining non-printable
-  return s
-    .replace(/[ ​‌‍  ﻿­]/g, ' ')
-    .replace(/[^\x20-\x7E]/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-}
 
 const headers = parseCSVLine(lines[0]);
 const mods = [];

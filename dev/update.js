@@ -1,4 +1,4 @@
-// update.js — validate CSVs and append new items to data.js
+﻿// update.js — validate CSVs and append new items to data.js
 // Usage:
 //   node update.js                                    dry-run all sections
 //   node update.js --section warframes                dry-run one section
@@ -14,6 +14,7 @@ const http    = require('http');
 const fs      = require('fs');
 const path    = require('path');
 const { URL } = require('url');
+const { parseCSVLine, cleanStr, jsD, jsS, jsSArr } = require('./lib/csv.js');
 
 // ── CLI ────────────────────────────────────────────────────────────
 const APPLY    = process.argv.includes('--apply');
@@ -44,6 +45,7 @@ const VALID_POLARITIES = new Set([
   'Naramon','Madurai','Vazarin','Zenurik','Unairu','Penjaga','Umbra','Universal','',
 ]);
 
+// Keep in sync with COMPANION_IMG_PLAIN in data.js
 const COMPANION_IMG_PLAIN = new Set(['Venari','Venari Prime']);
 
 // ── SECTION DEFINITIONS ────────────────────────────────────────────
@@ -82,10 +84,12 @@ const SECTIONS = [
 
   { id:'archWeapons', type:'items', varName:'ARCH_WEAPONS', xpPL:100,  defaultMaxRank:30, rankBounds:[1,40],
     csvFile: path.join(SRC_DIR,'weapons_vehicles.csv'),
+    catMap: { 'Arch-Guns': 'Arch-Gun', 'Prime': 'Prime Arch-Gun' },
     imgDir:'arch-weapons', imgFile:(n)=>n.replace(/ /g,'')+'.png' },
 
   { id:'compWeapons', type:'items', varName:'COMP_WEAPONS', xpPL:100,  defaultMaxRank:30, rankBounds:[1,40],
     csvFile: path.join(SRC_DIR,'weapons_companions.csv'),
+    catMap: { 'Robotic Weapons': 'Robotic', 'Prime Robotic Weapons': 'Prime Robotic' },
     imgDir:'comp-weapons', imgFile:(n)=>n.replace(/ /g,'')+'.png' },
 
   { id:'amps',        type:'items', varName:'AMPS',         xpPL:100,  defaultMaxRank:30, rankBounds:[1,40],
@@ -107,22 +111,6 @@ const SECTIONS = [
 ];
 
 // ── CSV PARSING ────────────────────────────────────────────────────
-function parseCSVLine(line) {
-  const fields = [];
-  let cur = '', inQ = false;
-  for (let i = 0; i < line.length; i++) {
-    const ch = line[i];
-    if (ch === '"') {
-      if (inQ && line[i+1] === '"') { cur += '"'; i++; }
-      else inQ = !inQ;
-    } else if (ch === ',' && !inQ) {
-      fields.push(cur); cur = '';
-    } else { cur += ch; }
-  }
-  fields.push(cur);
-  return fields;
-}
-
 function parseCSV(filePath) {
   const text = fs.readFileSync(filePath, 'utf-8').replace(/^﻿/, '');
   const lines = text.split(/\r?\n/);
@@ -186,28 +174,17 @@ function insertObject(dataJS, varName, newLines) {
   return dataJS.slice(0, pos) + newLines.join('\n') + '\n' + dataJS.slice(pos);
 }
 
-// ── JS ESCAPING & LINE BUILDERS ────────────────────────────────────
-function jsD(s) { return '"' + String(s).replace(/\\/g,'\\\\').replace(/"/g,'\\"') + '"'; }
-function jsS(s) { return "'" + String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/\r/g,'').replace(/\n/g,'') + "'"; }
-function jsSArr(arr) { return '[' + arr.map(jsS).join(',') + ']'; }
-
-function cleanStr(s) {
-  return (s || '')
-    .replace(/[ ​‌‍  　﻿­]/g, ' ')
-    .replace(/[^\x20-\x7E]/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-}
 function normSplit(s) { return (s||'').split(';').map(cleanStr).filter(Boolean); }
 
 function makeItemLine(row, cfg) {
   const name     = row['Name'].trim();
-  const cat      = row['Category'].trim();
+  const rawCat   = row['Category'].trim();
+  const cat      = cfg.catMap?.[rawCat] ?? rawCat;
   const obtain   = (row['Method to Obtain'] || '').trim();
   const maxRank  = parseInt(row['Max Rank']) || cfg.defaultMaxRank;
   const tradable = (row['Tradable'] || '').trim().toLowerCase() === 'yes' ? 1 : 0;
   const compFor  = (row['Component for'] || '').trim();
-  const parts = [jsD(name), jsD(cat), jsD(obtain), maxRank, cfg.xpPL];
+  const parts = [jsD(name), jsD(cat), jsD(obtain), maxRank];
   if (tradable || compFor) parts.push(tradable);
   if (compFor) parts.push(jsD(compFor));
   return `  [${parts.join(',')}],`;

@@ -2,32 +2,15 @@
 'use strict';
 const fs   = require('fs');
 const path = require('path');
+const { parseCSVLine } = require('../lib/csv.js');
 
 const raw = fs.readFileSync(path.join(__dirname, '..', 'Import', 'warframe_update.csv'), 'utf8');
-
-function parseCSVLine(line) {
-  const result = [];
-  let field = '', inQuotes = false;
-  for (let i = 0; i < line.length; i++) {
-    const ch = line[i];
-    if (ch === '"') {
-      if (inQuotes && line[i + 1] === '"') { field += '"'; i++; }
-      else inQuotes = !inQuotes;
-    } else if (ch === ',' && !inQuotes) {
-      result.push(field.trim()); field = '';
-    } else {
-      field += ch;
-    }
-  }
-  result.push(field.trim());
-  return result;
-}
 
 const lines = raw.split(/\r?\n/).filter(l => l.trim());
 const warframes = [], circuitWF = [], vaultedWF = [];
 
 for (let i = 1; i < lines.length; i++) {
-  const [name, cat, obtain, circuit, tradableRaw, vaultedRaw] = parseCSVLine(lines[i]);
+  const [name, cat, obtain, circuit, tradableRaw, vaultedRaw] = parseCSVLine(lines[i]).map(s => (s || '').trim());
   if (!name) continue;
   const tradable = tradableRaw && tradableRaw.toUpperCase() === 'TRUE' ? 1 : 0;
   const vaulted  = vaultedRaw  && vaultedRaw.toUpperCase()  === 'TRUE';

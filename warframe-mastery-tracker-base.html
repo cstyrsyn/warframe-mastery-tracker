@@ -162,6 +162,7 @@ body {
 /* ── GRID ── */
 #grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 8px; }
 #grid.list-view { grid-template-columns: 1fr; gap: 4px; }
+#grid.list-view .intrinsic-cards-grid { grid-template-columns: 1fr; gap: 4px; }
 
 /* ── LIST ROW ── */
 .list-row { display: flex; align-items: center; gap: 16px; padding: 8px 14px; }
@@ -838,14 +839,6 @@ body {
       </select>
     </div>
     <div class="add-row">
-      <span class="add-lbl">XP / Level</span>
-      <select class="add-ctrl" id="add-xppl">
-        <option value="100" selected>100 — Weapons / Amps</option>
-        <option value="200">200 — Warframes / Companions / Vehicles</option>
-        <option value="1500">1500 — Intrinsics</option>
-      </select>
-    </div>
-    <div class="add-row">
       <span class="add-lbl">Tradable</span>
       <input id="add-tradable" type="checkbox" style="width:14px;height:14px;accent-color:var(--gold);cursor:pointer">
     </div>
@@ -1000,6 +993,7 @@ function itemKey(tab, name) { return (PFX[tab] || tab+':') + name; }
 function aqKey(tab, name)   { return 'aq:' + itemKey(tab, name); }
 
 const AQ_TABS = new Set(['warframes','companions','primary','secondary','melee','vehicles','compWeapons','archWeapons','amps']);
+const TAB_XP_PER_LEVEL = { warframes:200, companions:200, vehicles:200, primary:100, secondary:100, melee:100, compWeapons:100, archWeapons:100, amps:100, intrinsics:1500 };
 
 function getItemRank(tab, name) { return progress[itemKey(tab, name)] || 0; }
 function setItemRank(tab, name, rank) {
@@ -1225,8 +1219,8 @@ function scXP() {
 function totalXP() {
   let xp = 0;
   for (const [tab, items] of Object.entries(TAB_DATA)) {
-    for (const [name,,, maxRank, xpPL] of items) {
-      xp += (progress[itemKey(tab,name)] || 0) * xpPL;
+    for (const [name,,, maxRank] of items) {
+      xp += (progress[itemKey(tab,name)] || 0) * TAB_XP_PER_LEVEL[tab];
     }
   }
   xp += scXP();
@@ -1247,10 +1241,10 @@ function potentialXP() {
   let xp = totalXP();
   for (const [tab, items] of Object.entries(TAB_DATA)) {
     if (!AQ_TABS.has(tab)) continue;
-    for (const [name,,, maxRank, xpPL] of items) {
+    for (const [name,,, maxRank] of items) {
       const rank = progress[itemKey(tab, name)] || 0;
       if (rank < maxRank && (rank > 0 || !!progress[aqKey(tab, name)])) {
-        xp += (maxRank - rank) * xpPL;
+        xp += (maxRank - rank) * TAB_XP_PER_LEVEL[tab];
       }
     }
   }
@@ -1620,9 +1614,10 @@ function restoreViewPrefs() {
 // ─────────────────────────────────────────────
 // RENDER
 // ─────────────────────────────────────────────
-function buildCard(tab, name, cat, obtain, maxRank, xpPL, tradable, compFor) {
+function buildItem(tab, name, cat, obtain, maxRank, tradable, compFor, listMode) {
   const showAcq = AQ_TABS.has(tab);
   const rank = getItemRank(tab, name);
+  const xpPL = TAB_XP_PER_LEVEL[tab];
   const xp = rank * xpPL;
   const maxXP = maxRank * xpPL;
   const pct = maxRank > 0 ? (rank / maxRank * 100).toFixed(1) : 0;
@@ -1648,91 +1643,55 @@ function buildCard(tab, name, cat, obtain, maxRank, xpPL, tradable, compFor) {
   const incarnonTag = incarnonGenesis ? `<a class="card-incarnon${isIncAcq?' on':''}" href="${esc(wikiUrl(incarnonGenesis))}" target="_blank" rel="noopener">Incarnon</a>` : '';
   const hasRecipe = BLUEPRINTS.has(name);
   const inCl = isInChecklist(tab, name);
-  return `<div class="card${cardCls ? ' '+cardCls : ''}">
-<div class="card-front">
-  <div class="card-top">
-    <div class="card-name"><a href="${esc(wikiUrl(name))}" target="_blank" rel="noopener">${esc(name)}</a></div>
-    <div style="display:flex;gap:3px;flex-shrink:0;align-items:center">${incarnonTag}${tradable ? `<a class="card-tradable" href="${esc(marketUrl(name))}" target="_blank" rel="noopener">Tradable</a>` : ''}${vaultedTag}${compTag}${circuitTag}<div class="card-cat">${esc(cat)}</div></div>
-  </div>
-  <div class="card-obtain-row"><div class="card-obtain" title="${esc(obtain)}">${esc(obtain)}</div></div>
-  <div class="card-row">
+  const badges = `${incarnonTag}${tradable ? `<a class="card-tradable" href="${esc(marketUrl(name))}" target="_blank" rel="noopener">Tradable</a>` : ''}${vaultedTag}${compTag}${circuitTag}<div class="card-cat">${esc(cat)}</div>`;
+  const slider = `<div class="card-row">
     <span class="rank-num">${rank}</span>
     <input class="rank-slider" type="range" min="0" max="${maxRank}"
       value="${rank}" style="--pct:${pct}%"
       oninput="sliderInput(this,'${tab}','${ename}',${maxRank})"
       onchange="sliderInput(this,'${tab}','${ename}',${maxRank})">
     <span class="rank-max">${maxRank}</span>
-  </div>
-  <div class="card-foot">
-    <div class="card-xp"><span>${fmt(xp)}</span> / ${fmt(maxXP)} XP</div>
-    <div class="qbtns">
+  </div>`;
+  const qbtns = `<div class="qbtns">
       ${hasRecipe ? `<button class="qbtn rec" onclick="flipCard(this)">Recipe</button>` : ''}
       ${showAcq && rank === 0 ? `<button class="qbtn aq${isAcq?' on':''}" onclick="toggleAcquired('${tab}','${ename}')">Acq</button>` : ''}
       ${incarnonGenesis ? `<button class="qbtn inc${isIncAcq?' on':''}" onclick="toggleIncarnon('${tab}','${ename}')">Incarnon Owned</button>` : ''}
       <button class="qbtn mx" onclick="setRank('${tab}','${ename}',${maxRank})">Max</button>
       <button class="qbtn zr" onclick="setRank('${tab}','${ename}',0)">0</button>
       <button class="qbtn cl${inCl?' on':''}" onclick="toggleChecklist('${tab}','${ename}')" title="Add to Checklist">+List</button>
-    </div>
-  </div>
-</div>
-${hasRecipe ? buildRecipeBack(name) : ''}
-</div>`;
-}
+    </div>`;
+  const recipe = hasRecipe ? buildRecipeBack(name) : '';
 
-function buildListRow(tab, name, cat, obtain, maxRank, xpPL, tradable, compFor) {
-  const showAcq = AQ_TABS.has(tab);
-  const rank = getItemRank(tab, name);
-  const xp = rank * xpPL;
-  const maxXP = maxRank * xpPL;
-  const pct = maxRank > 0 ? (rank / maxRank * 100).toFixed(1) : 0;
-  const isMax = rank === maxRank;
-  const isPartial = rank > 0 && !isMax;
-  const isAcq = showAcq && !!progress[aqKey(tab, name)];
-  const cardCls = isMax ? 'maxed' : isPartial ? 'partial' : isAcq ? 'acquired' : '';
-  const ename = jsStr(name);
-  const incarnonGenesis = INCARNON_WEAPONS.get(name);
-  const isIncAcq = incarnonGenesis && !!progress[incarnonKey(tab, name)];
-  let compTag = '';
-  if (compFor) {
-    const parts = compFor.split(/\s*;\s*/).filter(Boolean);
-    const label = parts.length === 1 ? `→ ${parts[0]}` : `→ ${parts[0]}+${parts.length-1}`;
-    compTag = `<div class="card-comp" title="Used to craft: ${esc(parts.join(', '))}">${esc(label)}</div>`;
-  }
-  const circuitTag = (tab === 'warframes' && CIRCUIT_WF.has(name)) ? '<div class="card-circuit">Circuit</div>' : '';
-  const vaultedTag = isPrimeVaulted(name)
-    ? (progress['wf-resurgence:' + name]
-        ? `<button class="card-resurgence" onclick="toggleVaultedState('${ename}')">Resurgence</button>`
-        : `<button class="card-vaulted" onclick="toggleVaultedState('${ename}')">Vaulted</button>`)
-    : '';
-  const incarnonTag = incarnonGenesis ? `<a class="card-incarnon${isIncAcq?' on':''}" href="${esc(wikiUrl(incarnonGenesis))}" target="_blank" rel="noopener">Incarnon</a>` : '';
-  const hasRecipe = BLUEPRINTS.has(name);
-  const inCl = isInChecklist(tab, name);
-  return `<div class="card list-row${cardCls ? ' '+cardCls : ''}">
+  if (listMode) {
+    return `<div class="card list-row${cardCls ? ' '+cardCls : ''}">
 <div class="card-front">
   <div class="list-name-col">
     <div class="card-name"><a href="${esc(wikiUrl(name))}" target="_blank" rel="noopener">${esc(name)}</a></div>
-    <div class="list-badges">${incarnonTag}${tradable ? `<a class="card-tradable" href="${esc(marketUrl(name))}" target="_blank" rel="noopener">Tradable</a>` : ''}${vaultedTag}${compTag}${circuitTag}<div class="card-cat">${esc(cat)}</div></div>
+    <div class="list-badges">${badges}</div>
   </div>
   <div class="card-obtain-row"><div class="card-obtain" title="${esc(obtain)}">${esc(obtain)}</div></div>
-  <div class="card-row">
-    <span class="rank-num">${rank}</span>
-    <input class="rank-slider" type="range" min="0" max="${maxRank}"
-      value="${rank}" style="--pct:${pct}%"
-      oninput="sliderInput(this,'${tab}','${ename}',${maxRank})"
-      onchange="sliderInput(this,'${tab}','${ename}',${maxRank})">
-    <span class="rank-max">${maxRank}</span>
-  </div>
+  ${slider}
   <div class="card-xp"><span>${fmt(xp)}</span> / ${fmt(maxXP)} XP</div>
-  <div class="qbtns">
-    ${hasRecipe ? `<button class="qbtn rec" onclick="flipCard(this)">Recipe</button>` : ''}
-    ${showAcq && rank === 0 ? `<button class="qbtn aq${isAcq?' on':''}" onclick="toggleAcquired('${tab}','${ename}')">Acq</button>` : ''}
-    ${incarnonGenesis ? `<button class="qbtn inc${isIncAcq?' on':''}" onclick="toggleIncarnon('${tab}','${ename}')">Incarnon Owned</button>` : ''}
-    <button class="qbtn mx" onclick="setRank('${tab}','${ename}',${maxRank})">Max</button>
-    <button class="qbtn zr" onclick="setRank('${tab}','${ename}',0)">0</button>
-    <button class="qbtn cl${inCl?' on':''}" onclick="toggleChecklist('${tab}','${ename}')" title="Add to Checklist">+List</button>
+  ${qbtns}
+</div>
+${recipe}
+</div>`;
+  }
+
+  return `<div class="card${cardCls ? ' '+cardCls : ''}">
+<div class="card-front">
+  <div class="card-top">
+    <div class="card-name"><a href="${esc(wikiUrl(name))}" target="_blank" rel="noopener">${esc(name)}</a></div>
+    <div style="display:flex;gap:3px;flex-shrink:0;align-items:center">${badges}</div>
+  </div>
+  <div class="card-obtain-row"><div class="card-obtain" title="${esc(obtain)}">${esc(obtain)}</div></div>
+  ${slider}
+  <div class="card-foot">
+    <div class="card-xp"><span>${fmt(xp)}</span> / ${fmt(maxXP)} XP</div>
+    ${qbtns}
   </div>
 </div>
-${hasRecipe ? buildRecipeBack(name) : ''}
+${recipe}
 </div>`;
 }
 
@@ -1778,11 +1737,11 @@ function render() {
       const grpLabel = grpCat === 'Drifter' ? 'Duviri' : grpCat;
       const catAll = items.filter(([,c]) => c === grpCat);
       let maxed = 0, earnedXP = 0, maxXP = 0;
-      for (const [name,,, maxRank, xpPL] of catAll) {
+      for (const [name,,, maxRank] of catAll) {
         const rank = getItemRank(activeTab, name);
         if (rank === maxRank) maxed++;
-        earnedXP += rank * xpPL;
-        maxXP += maxRank * xpPL;
+        earnedXP += rank * TAB_XP_PER_LEVEL[activeTab];
+        maxXP += maxRank * TAB_XP_PER_LEVEL[activeTab];
       }
       const key = 'intrinsics:' + grpCat;
       const collapsed = collapsedGroups.has(key);
@@ -1790,8 +1749,7 @@ function render() {
   <span class="sc-group-title"><span class="grp-arrow">${collapsed ? '▶' : '▼'}</span>${esc(grpLabel)} Intrinsics</span>
   <span style="color:var(--text-muted);font-weight:400;font-size:10px">${maxed}/${catAll.length} maxed · <b style="color:var(--gold)">${fmt(earnedXP)}</b> / ${fmt(maxXP)} XP</span>
 </div>`;
-      const builder = listView ? buildListRow : buildCard;
-      const cards = collapsed ? '' : `<div class="intrinsic-cards-grid">${catVisible.map(([n,c,o,mr,xpl,tr,cf]) => builder(activeTab,n,c,o,mr,xpl,tr,cf)).join('')}</div>`;
+      const cards = collapsed ? '' : `<div class="intrinsic-cards-grid">${catVisible.map(([n,c,o,mr,tr,cf]) => buildItem(activeTab,n,c,o,mr,tr,cf,listView)).join('')}</div>`;
       return [`<div class="intrinsic-group">${hdr}${cards}</div>`];
     }).join('');
     updateBulkLabel(visible.length, items.length);
@@ -1802,17 +1760,16 @@ function render() {
   if (groupedView) {
     const allCats = [...new Set(items.map(i => i[1]))];
     if (allCats.length > 1) {
-      const builder = listView ? buildListRow : buildCard;
       grid.innerHTML = allCats.flatMap(grpCat => {
         const catVisible = visible.filter(([,c]) => c === grpCat);
         if (catVisible.length === 0) return [];
         const catAll = items.filter(([,c]) => c === grpCat);
         let maxed = 0, earnedXP = 0, maxXP = 0;
-        for (const [name,,, maxRank, xpPL] of catAll) {
+        for (const [name,,, maxRank] of catAll) {
           const rank = getItemRank(activeTab, name);
           if (rank === maxRank) maxed++;
-          earnedXP += rank * xpPL;
-          maxXP += maxRank * xpPL;
+          earnedXP += rank * TAB_XP_PER_LEVEL[activeTab];
+          maxXP += maxRank * TAB_XP_PER_LEVEL[activeTab];
         }
         const key = activeTab + ':' + grpCat;
         const collapsed = collapsedGroups.has(key);
@@ -1820,7 +1777,7 @@ function render() {
   <span class="sc-group-title"><span class="grp-arrow">${collapsed ? '▶' : '▼'}</span>${esc(grpCat)}</span>
   <span style="color:var(--text-muted);font-weight:400;font-size:10px">${maxed}/${catAll.length} maxed · <b style="color:var(--gold)">${fmt(earnedXP)}</b> / ${fmt(maxXP)} XP</span>
 </div>`;
-        return collapsed ? [hdr] : [hdr + catVisible.map(([n,c,o,mr,xpl,tr,cf]) => builder(activeTab,n,c,o,mr,xpl,tr,cf)).join('')];
+        return collapsed ? [hdr] : [hdr + catVisible.map(([n,c,o,mr,tr,cf]) => buildItem(activeTab,n,c,o,mr,tr,cf,listView)).join('')];
       }).join('');
       updateBulkLabel(visible.length, items.length);
       updateTabStat();
@@ -1828,9 +1785,8 @@ function render() {
     }
   }
 
-  const builder = listView ? buildListRow : buildCard;
-  grid.innerHTML = visible.map(([name, cat, obtain, maxRank, xpPL, tradable, compFor]) =>
-    builder(activeTab, name, cat, obtain, maxRank, xpPL, tradable, compFor)
+  grid.innerHTML = visible.map(([name, cat, obtain, maxRank, tradable, compFor]) =>
+    buildItem(activeTab, name, cat, obtain, maxRank, tradable, compFor, listView)
   ).join('');
 
   updateBulkLabel(visible.length, items.length);
@@ -1896,7 +1852,7 @@ function sliderInput(el, tab, name, maxRank) {
   el.style.setProperty('--pct', pct + '%');
   el.closest('.card-row').querySelector('.rank-num').textContent = rank;
   const card = el.closest('.card');
-  const xpPL = TAB_DATA[tab]?.find(i => i[0] === name)?.[4] ?? 100;
+  const xpPL = TAB_XP_PER_LEVEL[tab] ?? 100;
   const maxXP = maxRank * xpPL;
   card.querySelector('.card-xp').innerHTML = `<span>${fmt(rank * xpPL)}</span> / ${fmt(maxXP)} XP`;
   card.classList.toggle('maxed', rank === maxRank);
@@ -1952,7 +1908,8 @@ function updateTabStat() {
   }
   const items = TAB_DATA[activeTab] || [];
   let maxed = 0, totalXPTab = 0, maxXPTab = 0;
-  for (const [name,,, maxRank, xpPL] of items) {
+  const xpPL = TAB_XP_PER_LEVEL[activeTab];
+  for (const [name,,, maxRank] of items) {
     const rank = getItemRank(activeTab, name);
     if (rank === maxRank) maxed++;
     totalXPTab += rank * xpPL;
@@ -2191,9 +2148,10 @@ function renderSummary() {
     const showOwned = AQ_TABS.has(tab);
     const cats = [...new Set(items.map(i => i[1]))];
     let tabEarned = 0, tabMax = 0;
-    for (const [name,,, maxRank, xpPL] of items) {
-      tabEarned += (progress[itemKey(tab, name)] || 0) * xpPL;
-      tabMax    += maxRank * xpPL;
+    const tabXpPL = TAB_XP_PER_LEVEL[tab];
+    for (const [name,,, maxRank] of items) {
+      tabEarned += (progress[itemKey(tab, name)] || 0) * tabXpPL;
+      tabMax    += maxRank * tabXpPL;
     }
     const collapsed = collapsedGroups.has('summary:' + tab);
     parts.push(sumHdr(tab, esc(tabLabel), `<b style="color:var(--gold)">${fmt(tabEarned)}</b> / ${fmt(tabMax)} XP`));
@@ -2202,12 +2160,12 @@ function renderSummary() {
         const catItems = items.filter(i => i[1] === cat);
         const total = catItems.length;
         let owned = 0, maxed = 0, earnedXP = 0, maxXP = 0;
-        for (const [name,,, maxRank, xpPL] of catItems) {
+        for (const [name,,, maxRank] of catItems) {
           const rank = progress[itemKey(tab, name)] || 0;
           if (showOwned && (rank > 0 || !!progress[aqKey(tab, name)])) owned++;
           if (rank === maxRank) maxed++;
-          earnedXP += rank * xpPL;
-          maxXP += maxRank * xpPL;
+          earnedXP += rank * tabXpPL;
+          maxXP += maxRank * tabXpPL;
         }
         const cardLabel = tab === 'intrinsics' ? (cat === 'Drifter' ? 'Duviri' : cat) : cat;
         parts.push(makeSumCard(cardLabel, total, showOwned, owned, maxed, earnedXP, maxXP));
@@ -2376,8 +2334,8 @@ function renderStarChart() {
 // ─────────────────────────────────────────────
 // MODS
 // ─────────────────────────────────────────────
-function modKey(name)   { return 'md:' + name; }
-function modAqKey(name) { return 'aq:md:' + name; }
+function modKey(name)   { return itemKey('mods', name); }
+function modAqKey(name) { return aqKey('mods', name); }
 function getModRank(name)  { return progress[modKey(name)] || 0; }
 function isModOwned(name)  { return getModRank(name) > 0 || !!progress[modAqKey(name)]; }
 
@@ -3332,7 +3290,7 @@ function _mergeCustomItem(it) {
   const arr = TAB_DATA[it.tab];
   if (!arr) return;
   if (arr.find(i => i[0] === it.name)) return;
-  arr.push([it.name, it.cat, it.obtain, it.maxRank, it.xpPL, it.tradable ? 1 : 0, it.compFor || undefined, true]);
+  arr.push([it.name, it.cat, it.obtain, it.maxRank, it.tradable ? 1 : 0, it.compFor || undefined, true]);
 }
 
 function saveCustomItems() {
@@ -3359,11 +3317,9 @@ function addOverlayClick(e) { if (e.target === document.getElementById('add-over
 
 function updateAddTabDefaults() {
   const tab = document.getElementById('add-tab').value;
-  const xpSel = document.getElementById('add-xppl');
   const rkSel = document.getElementById('add-maxrank');
-  if (tab === 'intrinsics') { xpSel.value = '1500'; rkSel.value = '10'; }
-  else if (['warframes','companions','vehicles'].includes(tab)) { xpSel.value = '200'; rkSel.value = '30'; }
-  else { xpSel.value = '100'; rkSel.value = '30'; }
+  if (tab === 'intrinsics') { rkSel.value = '10'; }
+  else { rkSel.value = '30'; }
   const cats = TAB_DATA[tab] ? [...new Set(TAB_DATA[tab].map(i => i[1]))] : [];
   document.getElementById('add-cat-list').innerHTML = cats.map(c => `<option value="${esc(c)}">`).join('');
   document.getElementById('add-cat').value = '';
@@ -3375,7 +3331,6 @@ function submitAddItem() {
   const cat      = document.getElementById('add-cat').value.trim();
   const obtain   = document.getElementById('add-obtain').value.trim();
   const maxRank  = parseInt(document.getElementById('add-maxrank').value);
-  const xpPL     = parseInt(document.getElementById('add-xppl').value);
   const tradable = document.getElementById('add-tradable').checked;
   const compFor  = document.getElementById('add-compfor').value.trim();
   const msg = document.getElementById('add-msg');
@@ -3386,7 +3341,7 @@ function submitAddItem() {
     msg.textContent = `"${name}" already exists in this tab.`;
     return;
   }
-  const it = { tab, name, cat, obtain, maxRank, xpPL, tradable, compFor };
+  const it = { tab, name, cat, obtain, maxRank, tradable, compFor };
   customItems.push(it);
   _mergeCustomItem(it);
   delete searchIndex[it.tab];

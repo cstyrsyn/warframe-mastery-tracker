@@ -1,40 +1,11 @@
-// build_arcanes.js — generates ARCANES, ARCANE_DESC, ARCANE_RANK_COPIES from Source/arcanes.csv and Source/rank_arcane.csv
+﻿// build_arcanes.js — generates ARCANES, ARCANE_DESC, ARCANE_RANK_COPIES from Source/arcanes.csv and Source/rank_arcane.csv
 'use strict';
 const fs   = require('fs');
 const path = require('path');
+const { parseCSVLine, cleanStr, jsEsc } = require('../lib/csv.js');
 
 const csv     = fs.readFileSync(path.join(__dirname, '..', 'Source', 'arcanes - Copy.csv'), 'utf8');
 const rankCsv = fs.readFileSync(path.join(__dirname, '..', 'Source', 'rank_arcane.csv'), 'utf8');
-
-function parseCSVLine(line) {
-  const result = [];
-  let field = '', inQuotes = false;
-  for (let i = 0; i < line.length; i++) {
-    const ch = line[i];
-    if (ch === '"') {
-      if (inQuotes && line[i + 1] === '"') { field += '"'; i++; }
-      else inQuotes = !inQuotes;
-    } else if (ch === ',' && !inQuotes) {
-      result.push(field); field = '';
-    } else {
-      field += ch;
-    }
-  }
-  result.push(field);
-  return result;
-}
-
-function jsEsc(s) {
-  return s.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/\r/g, '').replace(/\n/g, '');
-}
-
-function cleanStr(s) {
-  return s
-    .replace(/[ ​‌‍  ﻿­]/g, ' ')
-    .replace(/[^\x20-\x7E]/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-}
 
 function normAcq(s) {
   return s.split(/[;]/).map(p => cleanStr(p)).filter(Boolean);

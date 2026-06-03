@@ -95,7 +95,7 @@ Copy the relevant template from `dev/Templates/`, fill in your new items, then r
 Items can also be added directly to `data.js`. Each item is an array:
 
 ```js
-["Name", "Category", "How to obtain", maxRank, xpPerLevel, tradable, compFor]
+["Name", "Category", "How to obtain", maxRank, tradable, compFor]
 ```
 
 | Field | Type | Notes |
@@ -104,7 +104,6 @@ Items can also be added directly to `data.js`. Each item is an array:
 | `Category` | string | Subcategory shown on the card |
 | `How to obtain` | string | Source description shown on the card |
 | `maxRank` | number | `30` standard, `40` for Kuva/Tenet/Coda/Necramechs/Paracesis |
-| `xpPerLevel` | number | `200` for frames/companions/archwings, `100` for all weapons |
 | `tradable` | `1` or `0` | Optional. `1` shows a Tradable badge and market link |
 | `compFor` | string | Optional. Semicolon-separated list of weapons this item crafts into |
 

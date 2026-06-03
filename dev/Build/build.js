@@ -11,6 +11,7 @@
 'use strict';
 const fs   = require('fs');
 const path = require('path');
+const { parseCSVLine, jsD } = require('../lib/csv.js');
 
 const DATA_JS    = path.join(__dirname, '..', '..', 'data.js');
 const SOURCE_DIR = path.join(__dirname, '..', 'Source');
@@ -73,8 +74,7 @@ const FILE_CONFIG = [
     defaultMaxRank: 30,
     // CSV cols: Name, Category, Method to Obtain, Tradable, Max Rank
     cols: { name: 0, cat: 1, obtain: 2, tradable: 3, maxRank: 4 },
-    // Note: CSV uses "Arch-Guns" but data.js uses "Arch-Gun" for this section.
-    // New items will use the CSV category name; adjust manually if needed.
+    catMap: { 'Arch-Guns': 'Arch-Gun', 'Prime': 'Prime Arch-Gun' },
   },
   {
     file: 'weapons_companions.csv',
@@ -82,8 +82,7 @@ const FILE_CONFIG = [
     xpPL: 100,
     defaultMaxRank: 30,
     cols: { name: 0, cat: 1, obtain: 2, tradable: 3, maxRank: 4 },
-    // Note: CSV uses "Robotic Weapons" / "Prime Robotic Weapons" but data.js
-    // uses "Robotic" / "Prime Robotic". Adjust the CSV or the inserted line if needed.
+    catMap: { 'Robotic Weapons': 'Robotic', 'Prime Robotic Weapons': 'Prime Robotic' },
   },
   {
     file: 'weapons_amps.csv',
@@ -103,25 +102,6 @@ const FILE_CONFIG = [
 ];
 
 // ── CSV PARSING ────────────────────────────────────────────────────
-function parseCSVLine(line) {
-  const fields = [];
-  let cur = '';
-  let inQuotes = false;
-  for (let i = 0; i < line.length; i++) {
-    const ch = line[i];
-    if (ch === '"') {
-      inQuotes = !inQuotes;
-    } else if (ch === ',' && !inQuotes) {
-      fields.push(cur.trim());
-      cur = '';
-    } else {
-      cur += ch;
-    }
-  }
-  fields.push(cur.trim());
-  return fields;
-}
-
 function parseCSV(filePath) {
   const lines = fs.readFileSync(filePath, 'utf-8').split(/\r?\n/).slice(1); // drop header
   const rows = [];
@@ -164,22 +144,19 @@ function insertIntoSection(dataJS, varName, newLines) {
 }
 
 // ── JS LINE GENERATION ─────────────────────────────────────────────
-function jsStr(s) {
-  return '"' + String(s).replace(/\\/g, '\\\\').replace(/"/g, '\\"') + '"';
-}
-
 function makeItemLine(row, config) {
-  const { cols, xpPL, defaultMaxRank } = config;
+  const { cols, defaultMaxRank, catMap } = config;
   const name     = (row[cols.name]    || '').trim();
-  const cat      = (row[cols.cat]     || '').trim();
+  const rawCat   = (row[cols.cat]     || '').trim();
+  const cat      = catMap?.[rawCat] ?? rawCat;
   const obtain   = (row[cols.obtain]  || '').trim();
   const maxRank  = cols.maxRank  !== undefined ? (parseInt(row[cols.maxRank])  || defaultMaxRank) : defaultMaxRank;
   const tradable = cols.tradable !== undefined ? (row[cols.tradable]?.toLowerCase() === 'yes' ? 1 : 0) : 0;
   const compFor  = cols.compFor  !== undefined ? (row[cols.compFor]  || '').trim() : '';
 
-  const parts = [jsStr(name), jsStr(cat), jsStr(obtain), maxRank, xpPL];
+  const parts = [jsD(name), jsD(cat), jsD(obtain), maxRank];
   if (tradable || compFor) parts.push(tradable);
-  if (compFor)             parts.push(jsStr(compFor));
+  if (compFor)             parts.push(jsD(compFor));
 
   return `  [${parts.join(',')}],`;
 }
