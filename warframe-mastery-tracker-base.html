@@ -927,7 +927,26 @@ function removeFromChecklist(tab, name) {
   renderChecklist();
 }
 
+function getChecklistItemResources(tab, name) {
+  const itemRes = flattenResources(name, 1, new Set());
+  const itemCur = flattenCurrencies(name);
+  for (const c of Object.keys(itemCur)) delete itemRes[c];
+  const result = {};
+  for (const [r, v] of Object.entries(itemRes)) if (v > 0) result[r] = v;
+  for (const [r, v] of Object.entries(itemCur)) if (v > 0) result[r] = v;
+  return result;
+}
+
 function markChecklistDone(tab, name) {
+  const contrib = getChecklistItemResources(tab, name);
+  for (const [r, cost] of Object.entries(contrib)) {
+    if (checklistOwned[r]) {
+      checklistOwned[r] = Math.max(0, checklistOwned[r] - cost);
+      if (checklistOwned[r] === 0) delete checklistOwned[r];
+    }
+  }
+  saveChecklistOwned();
+
   if (AQ_TABS.has(tab) && getItemRank(tab, name) === 0 && !progress[aqKey(tab, name)]) {
     progress[aqKey(tab, name)] = true;
     saveProgress();
