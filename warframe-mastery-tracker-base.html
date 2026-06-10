@@ -677,6 +677,55 @@ body {
 .cl-relic-row.cl-vaulted { opacity: .5; }
 .cl-vaulted-tag { font-size: 10px; color: var(--text-muted); }
 .qbtn.cl.on { background: var(--gold-dim); color: #000; border-color: var(--gold-dim); }
+.cl-bp-list { border-top: 1px solid var(--border-soft); padding: 6px 14px 8px; background: var(--surface); display: flex; flex-direction: column; gap: 3px; }
+.cl-bp-row { display: flex; align-items: center; gap: 8px; font-size: 11px; cursor: pointer; padding: 1px 0; }
+.cl-bp-row input[type="checkbox"] { accent-color: var(--gold); flex-shrink: 0; }
+.cl-bp-label { flex: 1; color: var(--text); }
+.cl-bp-cost { color: var(--text-muted); font-variant-numeric: tabular-nums; }
+.cl-bp-row.cl-bp-owned .cl-bp-label, .cl-bp-row.cl-bp-owned .cl-bp-cost { opacity: .4; text-decoration: line-through; }
+.card-addlist {
+  font-size: 9px; padding: 1px 5px; border-radius: 3px;
+  background: var(--tag-bg); color: var(--text-muted);
+  border: 1px solid var(--text-muted);
+  flex-shrink: 0; cursor: pointer; font-family: inherit;
+  transition: all 0.12s; line-height: 1.4; font-weight: 500;
+}
+.card-addlist:hover { color: var(--text); border-color: var(--text-dim); }
+.card-addlist.on { background: #4a3810; color: var(--gold); border: 1px solid var(--gold); }
+.card-addlist.on:hover { background: #584414; }
+.qbtn-split { display: inline-flex; }
+.qbtn-split .qbtn:first-child { border-radius: 3px 0 0 3px; }
+.qbtn-split .qbtn:last-child  { border-radius: 0 3px 3px 0; border-left: none; padding-left: 5px; padding-right: 5px; }
+
+/* ── DUCAT CALCULATOR ── */
+#ducats-view { display: none; padding: 16px; max-width: 1400px; margin: 0 auto; }
+.dc-hdr { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; padding: 10px 14px; background: var(--surface); border: 1px solid var(--border-soft); border-radius: 6px; flex-wrap: wrap; }
+.dc-total-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+.dc-total-val { font-size: 20px; font-weight: 700; color: var(--gold); margin-left: 4px; }
+.dc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 8px; }
+.dc-set { background: var(--surface); border: 1px solid var(--border-soft); border-radius: 6px; overflow: hidden; }
+.dc-set-hdr { background: var(--surface2); padding: 7px 12px; display: flex; align-items: center; gap: 6px; border-bottom: 1px solid var(--border-soft); }
+.dc-set-name { font-size: 12px; font-weight: 600; color: var(--text); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dc-set-name a { color: inherit; text-decoration: none; }
+.dc-set-name a:hover { text-decoration: underline; }
+.dc-set-sub { font-size: 11px; color: var(--gold); font-weight: 600; white-space: nowrap; flex-shrink: 0; }
+.dc-vaulted-tag { font-size: 8px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; padding: 1px 4px; border: 1px solid var(--border-soft); border-radius: 3px; flex-shrink: 0; }
+.dc-part-row { display: grid; grid-template-columns: 1fr auto 46px 38px; align-items: center; gap: 6px; padding: 4px 12px; border-bottom: 1px solid var(--border-soft); }
+.dc-part-row:last-child { border-bottom: none; }
+.dc-part-name { font-size: 11px; color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dc-rarity { font-size: 9px; padding: 1px 5px; border-radius: 3px; white-space: nowrap; flex-shrink: 0; }
+.dc-rarity-0 { background: rgba(150,150,150,0.1); color: #999; border: 1px solid rgba(150,150,150,0.3); }
+.dc-rarity-1 { background: rgba(176,112,64,0.12); color: #c07840; border: 1px solid rgba(176,112,64,0.35); }
+.dc-rarity-2 { background: rgba(200,170,110,0.1); color: var(--gold); border: 1px solid rgba(200,170,110,0.35); }
+.dc-qty { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 3px; color: var(--text); text-align: center; font-size: 11px; padding: 2px 4px; box-sizing: border-box; }
+.dc-qty:focus { border-color: var(--gold-dim); outline: none; }
+.dc-part-total { font-size: 11px; color: var(--gold-light); font-weight: 600; text-align: right; white-space: nowrap; }
+.recipe-duc-name { cursor: pointer; }
+.recipe-duc-name:hover { text-decoration: underline; }
+.recipe-acq-badge { font-size: 8px; padding: 1px 4px; border-radius: 3px; background: rgba(200,170,110,0.12); color: var(--gold); border: 1px solid rgba(200,170,110,0.35); margin-left: 4px; white-space: nowrap; vertical-align: middle; }
+.dc-section { margin-bottom: 20px; }
+.dc-section-hdr { display: flex; align-items: baseline; padding-bottom: 8px; margin-bottom: 8px; border-bottom: 1px solid var(--gold-dim); cursor: pointer; user-select: none; }
+.dc-section-hdr:hover { border-bottom-color: var(--gold); }
 </style>
 </head>
 <body>
@@ -727,6 +776,7 @@ body {
   <div class="tab" data-tab="mods">Mods</div>
   <div class="tab" data-tab="arcanes">Arcanes</div>
   <div class="tab" data-tab="checklist">Checklist</div>
+  <div class="tab" data-tab="ducats">Ducats</div>
 </div>
 
 <div id="ctrl">
@@ -735,6 +785,9 @@ body {
     <div id="cat-btns"></div>
     <div id="status-dd"></div>
     <button class="filt-btn" id="fb-incarnon" style="display:none" onclick="toggleFilt('incarnon',this)">Incarnon</button>
+    <button class="filt-btn" id="fb-hasparts" style="display:none" onclick="toggleFilt('hasParts',this)">Has Prime Parts</button>
+    <span id="circuit-week-ind" class="circuit-week-ind" style="display:none"></span>
+    <span id="circuit-wf-week-ind" class="circuit-week-ind" style="display:none"></span>
     <button class="filt-btn" id="fb-conclave" style="display:none" onclick="toggleConclaveFilter(this)">Conclave</button>
     <button class="filt-btn" id="fb-flawed"   style="display:none" onclick="toggleFlawedFilter(this)">Flawed</button>
     <div id="tab-stat"></div>
@@ -743,6 +796,8 @@ body {
     <button class="filt-btn on" id="fb-tile" onclick="setListView(false)">Tile</button>
     <button class="filt-btn" id="fb-list" onclick="setListView(true)">List</button>
     <button class="filt-btn" id="fb-grp" onclick="toggleGroupView()">Group</button>
+    <button class="filt-btn" id="fb-wftile" style="display:none" onclick="toggleWfTileImages(this)">Tile Art</button>
+    <button class="filt-btn" id="fb-wfbg"   style="display:none" onclick="toggleWfBgImages(this)">BG Art</button>
   </div>
 </div>
 </div>
@@ -757,6 +812,7 @@ body {
   <div id="grid"></div>
   <div id="sc"></div>
   <div id="checklist-view"></div>
+  <div id="ducats-view"></div>
 </div>
 
 <!-- Export/Import Modal -->
@@ -862,15 +918,17 @@ body {
 
 <script src="data.js"></script>
 <script src="relics.js"></script>
+<script src="weapon-mr.js"></script>
 
 <script>
+
 // ─────────────────────────────────────────────
 // STATE
 // ─────────────────────────────────────────────
 const LS_KEY = 'wf-mastery-v1';
 let progress = {};
 let activeTab = 'summary';
-let filters = { status: '', incarnon: false };
+let filters = { status: '', incarnon: false, hasParts: false };
 const searchIndex = {}; // tab → Map<name, lowercased searchable text>
 
 function buildSearchIndex(tab) {
@@ -902,10 +960,12 @@ function buildSearchIndex(tab) {
 // ─────────────────────────────────────────────
 // CHECKLIST STATE
 // ─────────────────────────────────────────────
-let checklistItems = new Set(); // "tab\tname" strings
-let checklistOwned = {};        // { resourceName: qty }
+let checklistItems = new Set();
+let checklistOwned = {};
+let clBpOwned = new Set();
 const CL_KEY     = 'wf-checklist';
 const CL_OWN_KEY = 'wf-checklist-owned';
+const CL_BP_KEY  = 'wf-checklist-bp-owned';
 
 function clKey(tab, name)         { return tab + '\t' + name; }
 function isInChecklist(tab, name) { return checklistItems.has(clKey(tab, name)); }
@@ -913,9 +973,18 @@ function isInChecklist(tab, name) { return checklistItems.has(clKey(tab, name));
 function loadChecklist() {
   try { checklistItems = new Set(JSON.parse(localStorage.getItem(CL_KEY) || '[]')); } catch { checklistItems = new Set(); }
   try { checklistOwned = JSON.parse(localStorage.getItem(CL_OWN_KEY) || '{}'); } catch { checklistOwned = {}; }
+  try { clBpOwned = new Set(JSON.parse(localStorage.getItem(CL_BP_KEY) || '[]')); } catch { clBpOwned = new Set(); }
 }
 function saveChecklist()      { localStorage.setItem(CL_KEY,     JSON.stringify([...checklistItems])); }
 function saveChecklistOwned() { localStorage.setItem(CL_OWN_KEY, JSON.stringify(checklistOwned)); }
+function saveClBpOwned()      { localStorage.setItem(CL_BP_KEY,  JSON.stringify([...clBpOwned])); }
+
+function toggleClBpOwned(key) {
+  if (clBpOwned.has(key)) clBpOwned.delete(key);
+  else clBpOwned.add(key);
+  saveClBpOwned();
+  renderChecklist();
+}
 
 function toggleChecklist(tab, name) {
   const k = clKey(tab, name);
@@ -931,27 +1000,25 @@ function removeFromChecklist(tab, name) {
   renderChecklist();
 }
 
-function getChecklistItemResources(tab, name) {
-  const itemRes = flattenResources(name, 1, new Set());
-  const itemCur = flattenCurrencies(name);
-  for (const c of Object.keys(itemCur)) delete itemRes[c];
-  const result = {};
-  for (const [r, v] of Object.entries(itemRes)) if (v > 0) result[r] = v;
-  for (const [r, v] of Object.entries(itemCur)) if (v > 0) result[r] = v;
-  return result;
+function clearChecklist() {
+  checklistItems.clear();
+  checklistOwned = {};
+  clBpOwned.clear();
+  saveChecklist();
+  saveChecklistOwned();
+  saveClBpOwned();
+  renderChecklist();
 }
 
 function markChecklistDone(tab, name) {
-  const contrib = getChecklistItemResources(tab, name);
-  for (const [r, cost] of Object.entries(contrib)) {
-    if (checklistOwned[r]) {
-      checklistOwned[r] = Math.max(0, checklistOwned[r] - cost);
-      if (checklistOwned[r] === 0) delete checklistOwned[r];
+  if (tab === 'incarnon') {
+    const wTab = INCARNON_WEAPON_TAB.get(name) ?? null;
+    if (wTab && !progress[incarnonKey(wTab, name)]) {
+      progress[incarnonKey(wTab, name)] = true;
+      saveProgress();
+      updateHeader();
     }
-  }
-  saveChecklistOwned();
-
-  if (AQ_TABS.has(tab) && getItemRank(tab, name) === 0 && !progress[aqKey(tab, name)]) {
+  } else if (AQ_TABS.has(tab) && getItemRank(tab, name) === 0 && !progress[aqKey(tab, name)]) {
     progress[aqKey(tab, name)] = true;
     saveProgress();
     updateHeader();
@@ -960,6 +1027,20 @@ function markChecklistDone(tab, name) {
   saveChecklist();
   renderChecklist();
 }
+
+function incClKey(name)              { return 'incarnon\t' + name; }
+function isInIncarnonChecklist(name) { return checklistItems.has(incClKey(name)); }
+function toggleIncarnonChecklist(name) {
+  const k = incClKey(name);
+  if (checklistItems.has(k)) checklistItems.delete(k);
+  else checklistItems.add(k);
+  saveChecklist();
+  render();
+}
+const INCARNON_WEAPON_TAB = new Map();
+for (const wTab of ['primary', 'secondary', 'melee'])
+  for (const [name] of (TAB_DATA[wTab] || []))
+    if (INCARNON_WEAPONS.has(name)) INCARNON_WEAPON_TAB.set(name, wTab);
 
 function updateChecklistOwned(resource, rawVal) {
   const qty = Math.max(0, parseInt(rawVal, 10) || 0);
@@ -988,6 +1069,8 @@ let listView = false;
 let modShowConclave = false;
 let modShowFlawed   = false;
 let collapsedGroups = new Set(); // "tab:groupName"
+let wfTileImages = localStorage.getItem('wf-ui-wftile') !== '0';
+let wfBgImages   = localStorage.getItem('wf-ui-wfbg')   !== '0';
 
 function loadProgress() {
   const raw = localStorage.getItem(LS_KEY);
@@ -1007,6 +1090,12 @@ function saveProgress() {
   writeBackup();
 }
 
+let _saveTimer = 0;
+function deferSave() {
+  clearTimeout(_saveTimer);
+  _saveTimer = setTimeout(() => { saveProgress(); updateHeader(); }, 300);
+}
+
 // ─────────────────────────────────────────────
 // XP CALCULATIONS
 // ─────────────────────────────────────────────
@@ -1014,23 +1103,49 @@ function itemKey(tab, name) { return (PFX[tab] || tab+':') + name; }
 function aqKey(tab, name)   { return 'aq:' + itemKey(tab, name); }
 
 const AQ_TABS = new Set(['warframes','companions','primary','secondary','melee','vehicles','compWeapons','archWeapons','amps']);
+const WEAPON_MR_TABS = new Set(['primary','secondary','melee','archWeapons','compWeapons']);
 const TAB_XP_PER_LEVEL = { warframes:200, companions:200, vehicles:200, primary:100, secondary:100, melee:100, compWeapons:100, archWeapons:100, amps:100, intrinsics:1500 };
+
+// Circuit week rolling — both circuits share the same Thursday reset epoch (2026-05-29)
+// Incarnon: 8-week cycle, currently Week 6. Warframe: 11-week cycle, currently Week 8.
+const CIRCUIT_EPOCH = new Date('2026-05-29T00:00:00Z');
+function _circuitWeek(epochWeekIdx, cycle) {
+  const w = Math.floor((Date.now() - CIRCUIT_EPOCH.getTime()) / 604800000);
+  return ((epochWeekIdx + w) % cycle) + 1;
+}
+const CIRCUIT_WEEK_NOW     = _circuitWeek(5, 8);  // incarnon: epoch = week 6 (idx 5)
+const CIRCUIT_WF_WEEK_NOW  = _circuitWeek(7, 11); // warframe: epoch = week 8 (idx 7)
+const CIRCUIT_INCARNON_NOW = new Set(
+  typeof CIRCUIT_INCARNON_SCHEDULE !== 'undefined' ? CIRCUIT_INCARNON_SCHEDULE[CIRCUIT_WEEK_NOW - 1] : []
+);
+const CIRCUIT_WF_NOW = new Set(
+  typeof CIRCUIT_WF_SCHEDULE !== 'undefined' ? CIRCUIT_WF_SCHEDULE[CIRCUIT_WF_WEEK_NOW - 1] : []
+);
+// warframe name → circuit week number (for tooltip)
+const CIRCUIT_WF_WEEK_LOOKUP = typeof CIRCUIT_WF_SCHEDULE !== 'undefined'
+  ? Object.fromEntries(CIRCUIT_WF_SCHEDULE.flatMap((wfs, i) => wfs.map(wf => [wf, i + 1])))
+  : {};
+// incarnon genesis name → circuit week number (for tooltip)
+const CIRCUIT_INCARNON_WEEK_LOOKUP = typeof CIRCUIT_INCARNON_SCHEDULE !== 'undefined'
+  ? Object.fromEntries(CIRCUIT_INCARNON_SCHEDULE.flatMap((items, i) => items.map(item => [item, i + 1])))
+  : {};
 
 function getItemRank(tab, name) { return progress[itemKey(tab, name)] || 0; }
 function setItemRank(tab, name, rank) {
   progress[itemKey(tab, name)] = rank;
   if (rank > 0 && AQ_TABS.has(tab)) progress[aqKey(tab, name)] = true;
-  saveProgress();
-  updateHeader();
+  deferSave();
   updateTabStat();
 }
 
 function toggleAcquired(tab, name) {
   const k = aqKey(tab, name);
+  const wasAcquired = !!progress[k];
   progress[k] = !progress[k];
   saveProgress();
   updateHeader();
   render();
+  if (!wasAcquired) _checkDucatAcquiredPrompt(name);
 }
 
 function incarnonKey(tab, name) { return 'inc:' + itemKey(tab, name); }
@@ -1098,6 +1213,44 @@ function flattenCurrencies(name) {
   return totals;
 }
 
+// Currencies whose blueprints drop from the same mission as the currency itself,
+// so users may already own some blueprints and can deduct them from the total.
+const MISSION_DROP_CURRENCIES = new Set([
+  'Atramentum', 'Beating Heartstrings',
+  'Belric Crystal Fragment', 'Rania Crystal Fragment',
+  'Fate Pearl', 'Fergolyte', 'Lua Thrax Plasm',
+  'Maphica', 'Scuttler Husk', 'Vessel Capillary', 'Vestigial Mote',
+]);
+
+// Returns [{key, label, costs}] for each blueprint/part of `name` that costs a
+// mission-drop currency. `key` is the CURRENCIES map key; `label` is a short
+// display name (e.g. "Blueprint", "Neuroptics", or the item name for single crafts).
+function getMissionDropComponents(name) {
+  if (typeof CURRENCIES === 'undefined') return [];
+  const result = [];
+  function isMDC(costs) { return Object.keys(costs).some(c => MISSION_DROP_CURRENCIES.has(c)); }
+
+  if (CURRENCIES.has(name) && isMDC(CURRENCIES.get(name))) {
+    result.push({key: name, label: name, costs: CURRENCIES.get(name)});
+  } else if (CURRENCIES.has(name + ' Blueprint') && isMDC(CURRENCIES.get(name + ' Blueprint'))) {
+    result.push({key: name + ' Blueprint', label: 'Blueprint', costs: CURRENCIES.get(name + ' Blueprint')});
+  }
+
+  const bp = BLUEPRINTS.get(name);
+  if (bp) {
+    for (const [pName] of (bp[2] || [])) {
+      const bare = pName.replace(/^Prime\s+/, '');
+      for (const c of [pName, name + ' ' + pName, name + ' ' + bare, name + ' ' + bare + ' Blueprint']) {
+        if (CURRENCIES.has(c) && isMDC(CURRENCIES.get(c))) {
+          result.push({key: c, label: pName, costs: CURRENCIES.get(c)});
+          break;
+        }
+      }
+    }
+  }
+  return result;
+}
+
 function setRecipeView(btn, view) {
   const back = btn.closest('.card-back');
   back.classList.toggle('all-res', view === 'all');
@@ -1140,6 +1293,63 @@ function relicChipsHtml(drops) {
   return `<div class="relic-row">${chips}</div>`;
 }
 
+// Recursively renders a parts list, expanding craftable sub-parts in place.
+// parentName: the resolved item name whose parts we're rendering (used for BLUEPRINTS key lookups).
+// Returns { html, hasCraftable }.
+function renderRecipeParts(parentName, parts) {
+  let html = '';
+  let hasCraftable = false;
+  for (const part of (parts || [])) {
+    const [pName, pCount, pType, subCost] = part;
+    // Inline subCost sub-parts have no pType — they are always plain resources.
+    if (!pType) {
+      html += `<div class="recipe-item"><span class="recipe-res">${wikiLink(pName)}</span><span class="recipe-count">×${fmt(pCount)}</span></div>`;
+      continue;
+    }
+    const cls = pType === 'PrimePart' ? ' prime' : pType === 'Weapon' ? ' weapon' : '';
+    const bpKey = subCost ? null
+      : BLUEPRINTS.has(pName) ? pName
+      : BLUEPRINTS.has(parentName + ' ' + pName) ? parentName + ' ' + pName
+      : BLUEPRINTS.has(parentName + ' ' + pName.replace(/^Prime\s+/, '')) ? parentName + ' ' + pName.replace(/^Prime\s+/, '')
+      : null;
+    const craftable = !!subCost || !!bpKey;
+    if (craftable) hasCraftable = true;
+    let badge = '';
+    let subPartsData = null;
+    let subParentName = parentName;
+    if (craftable) {
+      const [cr, t] = subCost || BLUEPRINTS.get(bpKey) || [];
+      const h = t >= 3600 ? (t/3600).toFixed(0)+'h' : t > 0 ? (t/60).toFixed(0)+'m' : '';
+      const costStr = [cr ? fmt(cr)+' ₵' : '', h].filter(Boolean).join(' · ');
+      badge = `<span class="recipe-craftable">⚙${costStr ? ' '+costStr : ''}</span>`;
+      subPartsData = subCost ? subCost[2] : BLUEPRINTS.get(bpKey)[2];
+      subParentName = bpKey || parentName;
+    }
+    let nameHtml;
+    let relicHtml = '';
+    if (pType === 'PrimePart' || pType === 'Item') {
+      const drops = relicDropsForPart(parentName, pName, pType);
+      if (drops) {
+        relicHtml = relicChipsHtml(drops);
+        let ducPart = pName;
+        if (pType === 'Item' && pName.startsWith('Prime ')) ducPart = pName.slice(6) + ' Blueprint';
+        const acqBadge = getDucatQty(parentName, ducPart) > 0 ? ' <span class="recipe-acq-badge">Acq</span>' : '';
+        nameHtml = `<span class="recipe-duc-name" data-item="${esc(parentName)}" data-part="${esc(ducPart)}" onclick="ducatAcqAdd(this)">${esc(pName)}</span>${acqBadge}`;
+      } else {
+        nameHtml = esc(pName);
+      }
+    } else {
+      nameHtml = (craftable || pType !== 'Resource') ? esc(pName) : wikiLink(pName);
+    }
+    html += `<div class="recipe-item"><span class="recipe-res${cls}">${nameHtml}${badge}</span><span class="recipe-count">×${fmt(pCount)}</span></div>${relicHtml}`;
+    if (subPartsData && subPartsData.some(([,,t]) => t === 'Item')) {
+      const {html: subHtml} = renderRecipeParts(subParentName, subPartsData);
+      html += `<div class="recipe-sublist">${subHtml}</div>`;
+    }
+  }
+  return {html, hasCraftable};
+}
+
 function buildRecipeBack(name) {
   const bp = BLUEPRINTS.get(name);
   if (!bp) return '';
@@ -1153,8 +1363,9 @@ function buildRecipeBack(name) {
   // Relic drop row for the main blueprint itself
   const itemRelicEntry = typeof RELIC_DROPS !== 'undefined' ? RELIC_DROPS.get(name) : null;
   const bpDrops = itemRelicEntry ? itemRelicEntry[1]['Blueprint'] : null;
+  const bpAcqBadge = bpDrops && getDucatQty(name, 'Blueprint') > 0 ? ' <span class="recipe-acq-badge">Acq</span>' : '';
   const bpRow = bpDrops
-    ? `<div class="recipe-item"><span class="recipe-res prime">Blueprint</span><span class="recipe-count">×1</span></div>${relicChipsHtml(bpDrops)}`
+    ? `<div class="recipe-item"><span class="recipe-res prime"><span class="recipe-duc-name" data-item="${esc(name)}" data-part="Blueprint" onclick="ducatAcqAdd(this)">Blueprint</span>${bpAcqBadge}</span><span class="recipe-count">×1</span></div>${relicChipsHtml(bpDrops)}`
     : '';
 
   let hasCraftable = false;
@@ -1162,26 +1373,9 @@ function buildRecipeBack(name) {
   if (!parts || parts.length === 0) {
     compHtml = bpRow + '<div class="recipe-empty">No components listed</div>';
   } else {
-    compHtml = bpRow + parts.map(([pName, pCount, pType, subCost]) => {
-      const cls = pType === 'PrimePart' ? ' prime' : (pType === 'Weapon' ? ' weapon' : '');
-      const bpKey = BLUEPRINTS.has(pName) ? pName : BLUEPRINTS.has(name + ' ' + pName) ? name + ' ' + pName : BLUEPRINTS.has(name + ' ' + pName.replace(/^Prime\s+/, '')) ? name + ' ' + pName.replace(/^Prime\s+/, '') : null;
-      const craftable = !!subCost || !!bpKey;
-      if (craftable) hasCraftable = true;
-      let badge = '';
-      if (craftable) {
-        const [cr, t] = subCost || (bpKey ? BLUEPRINTS.get(bpKey) : []) || [];
-        const h = t >= 3600 ? (t/3600).toFixed(0)+'h' : t > 0 ? (t/60).toFixed(0)+'m' : '';
-        const costStr = [cr ? fmt(cr)+' ₵' : '', h].filter(Boolean).join(' · ');
-        badge = `<span class="recipe-craftable">⚙${costStr ? ' '+costStr : ''}</span>`;
-      }
-      const nameHtml = (craftable || pType !== 'Resource') ? esc(pName) : wikiLink(pName);
-      let relicHtml = '';
-      if (pType === 'PrimePart' || pType === 'Item') {
-        const drops = relicDropsForPart(name, pName, pType);
-        if (drops) relicHtml = relicChipsHtml(drops);
-      }
-      return `<div class="recipe-item"><span class="recipe-res${cls}">${nameHtml}${badge}</span><span class="recipe-count">×${fmt(pCount)}</span></div>${relicHtml}`;
-    }).join('');
+    const {html: partsHtml, hasCraftable: hc} = renderRecipeParts(name, parts);
+    hasCraftable = hc;
+    compHtml = bpRow + partsHtml;
   }
 
   let allResHtml = '';
@@ -1236,6 +1430,11 @@ function scXP() {
   }
   return xp;
 }
+
+const SC_MAX_XP = SC_PLANETS.reduce((s,n) => s + (SC_PLANET_XP[n]||0), 0)
+  + SC_JUNCTIONS.length * SC_JUNCTION_XP
+  + SC_SP_PLANETS.reduce((s,n) => s + (SC_PLANET_XP[n]||0), 0)
+  + SC_SP_JUNCTIONS.length * SC_JUNCTION_XP;
 
 function totalXP() {
   let xp = 0;
@@ -1317,7 +1516,7 @@ function switchTab(tabEl) {
   activeTab = tabEl.dataset.tab;
   localStorage.setItem('wf-ui-tab', activeTab);
   document.getElementById('search').value = '';
-  filters = { status: '', incarnon: false };
+  filters = { status: '', incarnon: false, hasParts: false };
   activeCategory = '';
   activeType = '';
   activeUse = '';
@@ -1332,19 +1531,37 @@ function switchTab(tabEl) {
   const isSummary = activeTab === 'summary';
   const isMods    = activeTab === 'mods';
   const isCl      = activeTab === 'checklist';
-  const isSpecial = isChart || isSummary || isCl;
+  const isDucats  = activeTab === 'ducats';
+  const isSpecial = isChart || isSummary || isCl || isDucats;
   document.getElementById('summary').classList.toggle('open', isSummary);
   document.getElementById('checklist-view').style.display = isCl ? 'block' : 'none';
+  document.getElementById('ducats-view').style.display    = isDucats ? 'block' : 'none';
   document.getElementById('grid').style.display     = isSpecial ? 'none' : 'grid';
   document.getElementById('sc').style.display       = isChart   ? 'block' : 'none';
   document.getElementById('bulk-bar').style.display = isSpecial ? 'none' : 'flex';
-  document.getElementById('cat-btns').style.display = isSpecial ? 'none' : '';
+  document.getElementById('cat-btns').style.display = (isSpecial && !isDucats) ? 'none' : '';
   document.getElementById('search').style.display   = isCl ? 'none' : '';
   document.getElementById('status-dd').style.display = isSpecial ? 'none' : '';
   const isIncarnon = ['primary','secondary','melee'].includes(activeTab);
   document.getElementById('fb-incarnon').style.display = isIncarnon ? '' : 'none';
+  const isAqTab = AQ_TABS.has(activeTab);
+  const hpBtn = document.getElementById('fb-hasparts');
+  hpBtn.style.display = isAqTab ? '' : 'none';
+  hpBtn.classList.toggle('on', false);
+  const _cwInd = document.getElementById('circuit-week-ind');
+  _cwInd.textContent = 'Circuit: Week ' + CIRCUIT_WEEK_NOW;
+  _cwInd.style.display = isIncarnon ? '' : 'none';
+  const _cwWfInd = document.getElementById('circuit-wf-week-ind');
+  _cwWfInd.textContent = 'Circuit: Week ' + CIRCUIT_WF_WEEK_NOW;
+  _cwWfInd.style.display = activeTab === 'warframes' ? '' : 'none';
   document.getElementById('fb-conclave').style.display = isMods ? '' : 'none';
   document.getElementById('fb-flawed').style.display   = isMods ? '' : 'none';
+  const wfTileBtn = document.getElementById('fb-wftile');
+  const wfBgBtn   = document.getElementById('fb-wfbg');
+  wfTileBtn.style.display = CARD_IMAGE_TABS.has(activeTab) ? '' : 'none';
+  wfBgBtn.style.display   = activeTab === 'intrinsics' ? '' : 'none';
+  wfTileBtn.classList.toggle('on', wfTileImages);
+  wfBgBtn.classList.toggle('on', wfBgImages);
   render();
 }
 
@@ -1367,6 +1584,14 @@ function populateCatFilter() {
     document.getElementById('ctrl-row2').style.display = '';
     document.getElementById('fb-grp').style.display = '';
     buildArcaneDropdowns();
+    return;
+  }
+  if (activeTab === 'ducats') {
+    document.getElementById('ctrl-row2').style.display = 'none';
+    const availCats = _ducatAvailableCategories();
+    if (availCats.length > 1) {
+      container.appendChild(makeDd('dd-cat', 'Category', availCats, activeCategory, setCatFilter, true));
+    }
     return;
   }
   if (!TAB_DATA[activeTab]) {
@@ -1459,7 +1684,8 @@ function arcaneSliderInput(el, name, maxRank) {
   }
   if (copies > 0) progress[arcKey(name)] = copies;
   else            delete progress[arcKey(name)];
-  saveProgress(); updateHeader(); updateTabStat();
+  deferSave();
+  updateTabStat();
 }
 
 function buildArcaneDropdowns() {
@@ -1662,16 +1888,25 @@ function buildItem(tab, name, cat, obtain, maxRank, tradable, compFor, listMode)
     const label = parts.length === 1 ? `→ ${parts[0]}` : `→ ${parts[0]}+${parts.length-1}`;
     compTag = `<div class="card-comp" title="Used to craft: ${esc(parts.join(', '))}">${esc(label)}</div>`;
   }
-  const circuitTag = (tab === 'warframes' && CIRCUIT_WF.has(name)) ? '<div class="card-circuit">Circuit</div>' : '';
+  const _inCircuit = tab === 'warframes' && CIRCUIT_WF.has(name);
+  const _circuitNow = _inCircuit && CIRCUIT_WF_NOW.has(name);
+  const circuitTag = _inCircuit ? `<div class="card-circuit${_circuitNow ? ' circuit-now' : ''}" title="Circuit Week ${CIRCUIT_WF_WEEK_LOOKUP[name] ?? '?'}${_circuitNow ? ' (current)' : ''}">Circuit</div>` : '';
   const vaultedTag = isPrimeVaulted(name)
     ? (progress['wf-resurgence:' + name]
         ? `<button class="card-resurgence" onclick="toggleVaultedState('${ename}')">Resurgence</button>`
         : `<button class="card-vaulted" onclick="toggleVaultedState('${ename}')">Vaulted</button>`)
     : '';
   const incarnonTag = incarnonGenesis ? `<a class="card-incarnon${isIncAcq?' on':''}" href="${esc(wikiUrl(incarnonGenesis))}" target="_blank" rel="noopener">Incarnon</a>` : '';
+  const _incInCircuit = !!incarnonGenesis && CIRCUIT_INCARNON_WEEK_LOOKUP[incarnonGenesis] != null;
+  const _incCircuitNow = _incInCircuit && CIRCUIT_INCARNON_NOW.has(incarnonGenesis);
+  const _incCircuitWk = _incInCircuit ? CIRCUIT_INCARNON_WEEK_LOOKUP[incarnonGenesis] : null;
+  const incCircuitTag = _incInCircuit ? `<div class="card-circuit${_incCircuitNow ? ' circuit-now' : ''}" title="Incarnon Genesis — Circuit Week ${_incCircuitWk}${_incCircuitNow ? ' (current)' : ''}">Inc. Circuit</div>` : '';
   const hasRecipe = BLUEPRINTS.has(name);
   const inCl = isInChecklist(tab, name);
-  const badges = `${incarnonTag}${tradable ? `<a class="card-tradable" href="${esc(marketUrl(name))}" target="_blank" rel="noopener">Tradable</a>` : ''}${vaultedTag}${compTag}${circuitTag}<div class="card-cat">${esc(cat)}</div>`;
+  const _mr = WEAPON_MR_TABS.has(tab) && typeof WEAPON_MR !== 'undefined' ? (WEAPON_MR.get(name) ?? -1) : -1;
+  const mrTag = _mr > 0 ? `<div class="card-mr">MR ${_mr}</div>` : '';
+  const tradableTag = tradable ? `<a class="card-tradable" href="${esc(marketUrl(name))}" target="_blank" rel="noopener">Tradable</a>` : '';
+  const badges = `${incarnonTag}${incCircuitTag}${vaultedTag}${circuitTag}${mrTag}<div class="card-cat">${esc(cat)}</div><button class="card-addlist${inCl?' on':''}" onclick="toggleChecklist('${tab}','${ename}')" title="Add to Checklist">+</button>`;
   const slider = `<div class="card-row">
     <span class="rank-num">${rank}</span>
     <input class="rank-slider" type="range" min="0" max="${maxRank}"
@@ -1683,11 +1918,11 @@ function buildItem(tab, name, cat, obtain, maxRank, tradable, compFor, listMode)
   const qbtns = `<div class="qbtns">
       ${hasRecipe ? `<button class="qbtn rec" onclick="flipCard(this)">Recipe</button>` : ''}
       ${showAcq && rank === 0 ? `<button class="qbtn aq${isAcq?' on':''}" onclick="toggleAcquired('${tab}','${ename}')">Acq</button>` : ''}
-      ${incarnonGenesis ? `<button class="qbtn inc${isIncAcq?' on':''}" onclick="toggleIncarnon('${tab}','${ename}')">Incarnon Owned</button>` : ''}
+      ${incarnonGenesis ? `<span class="qbtn-split"><button class="qbtn inc${isIncAcq?' on':''}" onclick="toggleIncarnon('${tab}','${ename}')" title="Toggle Incarnon Owned">Inc</button><button class="qbtn cl${isInIncarnonChecklist(name)?' on':''}" onclick="toggleIncarnonChecklist('${ename}')" title="Add Incarnon to Checklist">+</button></span>` : ''}
       <button class="qbtn mx" onclick="setRank('${tab}','${ename}',${maxRank})">Max</button>
       <button class="qbtn zr" onclick="setRank('${tab}','${ename}',0)">0</button>
-      <button class="qbtn cl${inCl?' on':''}" onclick="toggleChecklist('${tab}','${ename}')" title="Add to Checklist">+List</button>
     </div>`;
+  const obtain_row = `<div class="card-obtain-row"><div class="card-obtain" title="${esc(obtain)}">${esc(obtain)}</div>${compTag}${tradableTag}</div>`;
   const recipe = hasRecipe ? buildRecipeBack(name) : '';
 
   if (listMode) {
@@ -1697,7 +1932,7 @@ function buildItem(tab, name, cat, obtain, maxRank, tradable, compFor, listMode)
     <div class="card-name"><a href="${esc(wikiUrl(name))}" target="_blank" rel="noopener">${esc(name)}</a></div>
     <div class="list-badges">${badges}</div>
   </div>
-  <div class="card-obtain-row"><div class="card-obtain" title="${esc(obtain)}">${esc(obtain)}</div></div>
+  ${obtain_row}
   ${slider}
   <div class="card-xp"><span>${fmt(xp)}</span> / ${fmt(maxXP)} XP</div>
   ${qbtns}
@@ -1706,13 +1941,18 @@ ${recipe}
 </div>`;
   }
 
+  const _imgSrc = wfTileImages ? getCardImage(tab, name, cat) : null;
+  const _imgCls = (tab === 'warframes' || tab === 'intrinsics') ? 'card-wf-img' : 'card-wf-img card-wf-img--lg';
+  const wfImg = _imgSrc
+    ? `<img class="${_imgCls}" src="${esc(_imgSrc)}" alt="" loading="lazy" onerror="this.style.display='none'">`
+    : '';
   return `<div class="card${cardCls ? ' '+cardCls : ''}">
-<div class="card-front">
+<div class="card-front">${wfImg}
   <div class="card-top">
     <div class="card-name"><a href="${esc(wikiUrl(name))}" target="_blank" rel="noopener">${esc(name)}</a></div>
     <div style="display:flex;gap:3px;flex-shrink:0;align-items:center">${badges}</div>
   </div>
-  <div class="card-obtain-row"><div class="card-obtain" title="${esc(obtain)}">${esc(obtain)}</div></div>
+  ${obtain_row}
   ${slider}
   <div class="card-foot">
     <div class="card-xp"><span>${fmt(xp)}</span> / ${fmt(maxXP)} XP</div>
@@ -1729,30 +1969,9 @@ function render() {
   if (activeTab === 'mods')      { renderMods();      return; }
   if (activeTab === 'arcanes')   { renderArcanes();   return; }
   if (activeTab === 'checklist') { renderChecklist(); return; }
+  if (activeTab === 'ducats')    { renderDucats();    return; }
   const items = TAB_DATA[activeTab] || [];
-  const q = document.getElementById('search').value.toLowerCase();
-  const cat = activeCategory;
-
-  if (q && !searchIndex[activeTab]) buildSearchIndex(activeTab);
-  const idx = searchIndex[activeTab];
-
-  let visible = items.filter(([name, category]) => {
-    if (q && !(idx?.get(name) ?? '').includes(q)) return false;
-    if (cat && category !== cat) return false;
-    const rank = getItemRank(activeTab, name);
-    const maxRank = items.find(i => i[0] === name)?.[3] ?? 30;
-    const status = filters.status;
-    if (status) {
-      const isAcqTab = AQ_TABS.has(activeTab);
-      const isAcq = isAcqTab && !!progress[aqKey(activeTab, name)];
-      if (status === 'unowned'    && (rank > 0 || isAcq)) return false;
-      if (status === 'notStarted' && !(rank === 0 && isAcq)) return false;
-      if (status === 'inProgress' && (rank === 0 || rank === maxRank)) return false;
-      if (status === 'maxed'      && rank !== maxRank) return false;
-    }
-    if (filters.incarnon && !INCARNON_WEAPONS.has(name)) return false;
-    return true;
-  });
+  const visible = getVisibleItems();
 
   const grid = document.getElementById('grid');
   if (visible.length === 0) {
@@ -1783,8 +2002,10 @@ function render() {
   <span class="sc-group-title"><span class="grp-arrow">${collapsed ? '▶' : '▼'}</span>${esc(grpLabel)} Intrinsics</span>
   <span style="color:var(--text-muted);font-weight:400;font-size:10px">${maxed}/${catAll.length} maxed · <b style="color:var(--gold)">${fmt(earnedXP)}</b> / ${fmt(maxXP)} XP</span>
 </div>`;
+      const bgSrc = wfBgImages ? (INTRINSIC_BG[grpCat] ?? null) : null;
+      const bgImg = bgSrc ? `<img class="intrinsic-bg" src="${esc(bgSrc)}" alt="" onerror="this.style.display='none'">` : '';
       const cards = collapsed ? '' : `<div class="intrinsic-cards-grid">${catVisible.map(([n,c,o,mr,tr,cf]) => buildItem(activeTab,n,c,o,mr,tr,cf,listView)).join('')}</div>`;
-      return [`<div class="intrinsic-group">${hdr}${cards}</div>`];
+      return [`<div class="intrinsic-group">${bgImg}${hdr}${cards}</div>`];
     }).join('');
     updateBulkLabel(visible.length, items.length);
     updateTabStat();
@@ -1842,6 +2063,44 @@ function jsStr(s) {
 }
 function wikiUrl(name) {
   return 'https://wiki.warframe.com/w/' + name.replace(/ /g, '_');
+}
+const CARD_IMAGE_TABS = new Set(['warframes', 'primary', 'secondary', 'melee', 'companions', 'compWeapons', 'vehicles', 'archWeapons', 'amps', 'intrinsics']);
+function getCardImage(tab, name, cat) {
+  const base = name.replace(/ /g, '');
+  if (tab === 'warframes') return 'Images/warframes/'  + base + 'Helmet.png';
+  if (tab === 'primary')   return 'Images/primary/'    + base + '.png';
+  if (tab === 'secondary') return 'Images/secondary/'  + base + '.png';
+  if (tab === 'melee')        return 'Images/melee/'         + base + '.png';
+  if (tab === 'compWeapons')  return 'Images/comp-weapons/'  + base + '.png';
+  if (tab === 'vehicles')     return 'Images/vehicles/'       + base + '.png';
+  if (tab === 'archWeapons')  return 'Images/arch-weapons/'   + base + '.png';
+  if (tab === 'amps')         return 'Images/amps/'            + base + '.png';
+  if (tab === 'intrinsics') {
+    if (cat === 'Railjack') return 'Images/intrinsics/' + base + 'Intrinsic.png';
+    if (cat === 'Drifter')  return 'Images/intrinsics/DrifterIntrinsic' + base + '.png';
+  }
+  if (tab === 'companions') {
+    if (!COMPANION_IMG_PLAIN.has(name)) {
+      if (cat === 'Kubrows') return 'Images/companions/' + base + 'Kubrow.png';
+      if (cat === 'Kavats')  return 'Images/companions/' + base + 'Kavat.png';
+      if (cat === 'Moas')    return 'Images/companions/' + base + 'MOA.png';
+      if (cat === 'Hound')   return 'Images/companions/' + base + 'Hound.png';
+    }
+    return 'Images/companions/' + base + '.png';
+  }
+  return null;
+}
+function toggleWfTileImages(btn) {
+  wfTileImages = !wfTileImages;
+  localStorage.setItem('wf-ui-wftile', wfTileImages ? '1' : '0');
+  btn.classList.toggle('on', wfTileImages);
+  render();
+}
+function toggleWfBgImages(btn) {
+  wfBgImages = !wfBgImages;
+  localStorage.setItem('wf-ui-wfbg', wfBgImages ? '1' : '0');
+  btn.classList.toggle('on', wfBgImages);
+  render();
 }
 function marketSlug(name) {
   return name.toLowerCase().replace(/[ -]/g, '_');
@@ -1909,11 +2168,13 @@ function sliderInput(el, tab, name, maxRank) {
 }
 
 function setRank(tab, name, rank) {
+  const wasAcq = AQ_TABS.has(tab) && !!progress[aqKey(tab, name)];
   progress[itemKey(tab, name)] = rank;
   if (rank > 0 && AQ_TABS.has(tab)) progress[aqKey(tab, name)] = true;
   saveProgress();
   updateHeader();
   render();
+  if (rank > 0 && AQ_TABS.has(tab) && !wasAcq) _checkDucatAcquiredPrompt(name);
 }
 
 function updateTabStat() {
@@ -1965,8 +2226,10 @@ function getVisibleItems() {
   const items = TAB_DATA[activeTab] || [];
   const q = document.getElementById('search').value.toLowerCase();
   const cat = activeCategory;
+  if (q && !searchIndex[activeTab]) buildSearchIndex(activeTab);
+  const idx = searchIndex[activeTab];
   return items.filter(([name, category,,maxRank]) => {
-    if (q && !name.toLowerCase().includes(q) && !category.toLowerCase().includes(q)) return false;
+    if (q && !(idx?.get(name) ?? '').includes(q)) return false;
     if (cat && category !== cat) return false;
     const rank = getItemRank(activeTab, name);
     const status = filters.status;
@@ -1978,6 +2241,8 @@ function getVisibleItems() {
       if (status === 'inProgress' && (rank === 0 || rank === maxRank)) return false;
       if (status === 'maxed'      && rank !== maxRank) return false;
     }
+    if (filters.incarnon && !INCARNON_WEAPONS.has(name)) return false;
+    if (filters.hasParts && !_hasAnyDucatParts(name)) return false;
     return true;
   });
 }
@@ -2057,6 +2322,7 @@ const SUMMARY_LABELS = {
   vehicles: 'Vehicles', companions: 'Companions',
   compWeapons: 'Companion Weapons', archWeapons: 'Arch Weapons',
   amps: 'Amps', intrinsics: 'Intrinsics', mods: 'Mods',
+  incarnon: 'Incarnon Genesis',
 };
 
 function makeSumCard(label, total, showOwned, owned, maxed, earnedXP, maxXP) {
@@ -2081,18 +2347,17 @@ function sumHdr(key, label, rightHtml) {
 // ─────────────────────────────────────────────
 // CHECKLIST RENDER
 // ─────────────────────────────────────────────
-const CL_TAB_ORDER = ['warframes','primary','secondary','melee','companions','compWeapons','vehicles','archWeapons','amps','intrinsics'];
+const CL_TAB_ORDER = ['warframes','primary','secondary','melee','companions','compWeapons','vehicles','archWeapons','amps','intrinsics','incarnon'];
 const CL_RARITY    = ['Common','Uncommon','Rare'];
 
 function renderChecklist() {
   const el = document.getElementById('checklist-view');
 
   if (checklistItems.size === 0) {
-    el.innerHTML = '<div class="empty" style="padding:40px;text-align:center">No items in checklist.<br>Use <b>+List</b> on any item tile to add it.</div>';
+    el.innerHTML = '<div class="empty" style="padding:40px;text-align:center">No items in checklist.<br>Use <b>+</b> on any item tile to add it.</div>';
     return;
   }
 
-  // Group items by tab
   const grouped = new Map();
   for (const key of checklistItems) {
     const sep = key.indexOf('\t');
@@ -2101,24 +2366,37 @@ function renderChecklist() {
     grouped.get(tab).push(name);
   }
 
-  // Accumulate resources and currencies
   const totalRes = {};
   for (const key of checklistItems) {
-    const name = key.slice(key.indexOf('\t') + 1);
+    const sep = key.indexOf('\t');
+    const kTab = key.slice(0, sep), name = key.slice(sep + 1);
+    if (kTab === 'incarnon') {
+      const genesisName = INCARNON_WEAPONS.get(name) || (name + ' Incarnon Genesis');
+      const reqs = INCARNON_REQUIREMENTS.get(genesisName);
+      if (reqs) for (const [r, c] of reqs) totalRes[r] = (totalRes[r] || 0) + c;
+      continue;
+    }
     const itemRes = flattenResources(name, 1, new Set());
     const itemCur = flattenCurrencies(name);
+    for (const {key, costs} of getMissionDropComponents(name)) {
+      if (clBpOwned.has(key)) {
+        for (const [cur, amt] of Object.entries(costs))
+          itemCur[cur] = Math.max(0, (itemCur[cur] || 0) - amt);
+      }
+    }
     for (const c of Object.keys(itemCur)) delete itemRes[c];
     for (const [r, v] of Object.entries(itemRes)) totalRes[r] = (totalRes[r] || 0) + v;
-    for (const [r, v] of Object.entries(itemCur)) totalRes[r] = (totalRes[r] || 0) + v;
+    for (const [r, v] of Object.entries(itemCur)) if (v > 0) totalRes[r] = (totalRes[r] || 0) + v;
   }
   const sortedRes = Object.entries(totalRes).sort((a, b) => b[1] - a[1]);
 
-  const headerHtml = `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+  let html = `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
   <span style="font-size:11px;color:var(--text-muted)">${checklistItems.size} item${checklistItems.size !== 1 ? 's' : ''}</span>
   <button class="btn" onclick="clearChecklist()">Clear All</button>
 </div>`;
 
-  const resHtml = sortedRes.length ? `<div class="cl-section">
+  if (sortedRes.length) {
+    html += `<div class="cl-section">
 <div class="cl-section-hdr">Resources Required</div>
 ${sortedRes.map(([rName, total]) => {
   const owned = checklistOwned[rName] || 0;
@@ -2131,15 +2409,33 @@ ${sortedRes.map(([rName, total]) => {
   <span class="cl-res-need${need === 0 ? ' cl-done' : ''}">Need: ${fmt(need)}</span>
 </div>`;
 }).join('\n')}
-</div>` : '';
+</div>`;
+  }
 
-  let itemsHtml = '';
   for (const tab of CL_TAB_ORDER) {
     if (!grouped.has(tab)) continue;
     const label = SUMMARY_LABELS[tab] || tab;
     let rows = '';
     for (const name of grouped.get(tab)) {
       const ename  = jsStr(name);
+
+      if (tab === 'incarnon') {
+        const genesisName = INCARNON_WEAPONS.get(name) || (name + ' Incarnon Genesis');
+        const wTab = INCARNON_WEAPON_TAB.get(name) ?? null;
+        const isIncOwned = wTab ? !!progress[incarnonKey(wTab, name)] : false;
+        rows += `<div class="cl-item">
+<div class="cl-item-hdr">
+  <a class="cl-item-name" href="${esc(wikiUrl(genesisName))}" target="_blank" rel="noopener">${esc(genesisName)}</a>
+  ${isIncOwned ? '<span class="cl-acq-tag">Acquired</span>' : ''}
+  <div class="cl-item-btns">
+    <button class="qbtn" onclick="markChecklistDone('incarnon','${ename}')" title="Mark done &amp; remove">✓ Done</button>
+    <button class="qbtn zr" onclick="removeFromChecklist('incarnon','${ename}')" title="Remove">✕</button>
+  </div>
+</div>
+</div>`;
+        continue;
+      }
+
       const isAcq  = AQ_TABS.has(tab) && (!!progress[aqKey(tab, name)] || getItemRank(tab, name) > 0);
 
       let relicHtml = '';
@@ -2163,6 +2459,20 @@ ${sortedRes.map(([rName, total]) => {
         if (partRows) relicHtml = `<div class="cl-relics">${partRows}</div>`;
       }
 
+      const mdComps = getMissionDropComponents(name);
+      let bpOwnedHtml = '';
+      if (mdComps.length) {
+        bpOwnedHtml = '<div class="cl-bp-list">' + mdComps.map(({key, label, costs}) => {
+          const owned = clBpOwned.has(key);
+          const costStr = Object.entries(costs).map(([c, a]) => `${fmt(a)} ${c}`).join(', ');
+          return `<label class="cl-bp-row${owned ? ' cl-bp-owned' : ''}">
+  <input type="checkbox" ${owned ? 'checked' : ''} onchange="toggleClBpOwned('${key}')">
+  <span class="cl-bp-label">${esc(label)}</span>
+  <span class="cl-bp-cost">${esc(costStr)}</span>
+</label>`;
+        }).join('') + '</div>';
+      }
+
       rows += `<div class="cl-item">
 <div class="cl-item-hdr">
   <a class="cl-item-name" href="${esc(wikiUrl(name))}" target="_blank" rel="noopener">${esc(name)}</a>
@@ -2172,13 +2482,13 @@ ${sortedRes.map(([rName, total]) => {
     <button class="qbtn zr" onclick="removeFromChecklist('${tab}','${ename}')" title="Remove">✕</button>
   </div>
 </div>
-${relicHtml}
+${bpOwnedHtml}${relicHtml}
 </div>`;
     }
-    itemsHtml += `<div class="cl-section"><div class="cl-section-hdr">${esc(label)}</div>${rows}</div>`;
+    html += `<div class="cl-section"><div class="cl-section-hdr">${esc(label)}</div>${rows}</div>`;
   }
 
-  el.innerHTML = `<div class="cl-layout"><div class="cl-col-items">${headerHtml}${itemsHtml}</div><div class="cl-col-resources">${resHtml}</div></div>`;
+  el.innerHTML = html;
 }
 
 function renderSummary() {
@@ -2216,16 +2526,14 @@ function renderSummary() {
 
   // Star Chart
   const scEarned = scXP();
-  const scMax = 2 * SC_PLANETS.reduce((s,n) => s + (SC_PLANET_XP[n]||0), 0)
-    + (SC_JUNCTIONS.length + SC_SP_JUNCTIONS.length) * SC_JUNCTION_XP;
-  const scPct = scMax > 0 ? (scEarned / scMax * 100).toFixed(1) : 0;
+  const scPct = SC_MAX_XP > 0 ? (scEarned / SC_MAX_XP * 100).toFixed(1) : 0;
   const scCollapsed = collapsedGroups.has('summary:starChart');
-  parts.push(sumHdr('starChart', 'Star Chart', `<b style="color:var(--gold)">${fmt(scEarned)}</b> / ${fmt(scMax)} XP`));
+  parts.push(sumHdr('starChart', 'Star Chart', `<b style="color:var(--gold)">${fmt(scEarned)}</b> / ${fmt(SC_MAX_XP)} XP`));
   if (!scCollapsed) {
     parts.push(`<div class="sum-card">
   <div class="sum-hdr"><span class="sum-name">Star Chart</span><span class="sum-total">${scPct}% complete</span></div>
   <div class="sum-row"><span class="sum-lbl">XP</span><div class="sum-bar-bg"><div class="sum-bar sum-maxed" style="width:${scPct}%"></div></div><span class="sum-cnt">${scPct}%</span></div>
-  <div class="sum-xp"><span>${fmt(scEarned)}</span> / ${fmt(scMax)} XP</div>
+  <div class="sum-xp"><span>${fmt(scEarned)}</span> / ${fmt(SC_MAX_XP)} XP</div>
 </div>`);
   }
 
@@ -2364,12 +2672,8 @@ function renderStarChart() {
 </div>`;
   }).join('');
 
-  document.getElementById('tab-stat').innerHTML = (() => {
-    const allXP = scXP();
-    const maxXP = 2 * SC_PLANETS.reduce((s,n)=>s+(SC_PLANET_XP[n]||0),0)
-      + (SC_JUNCTIONS.length + SC_SP_JUNCTIONS.length) * SC_JUNCTION_XP;
-    return `<b>${fmt(allXP)}</b> / ${fmt(maxXP)} XP from star chart`;
-  })();
+  document.getElementById('tab-stat').innerHTML =
+    `<b>${fmt(scXP())}</b> / ${fmt(SC_MAX_XP)} XP from star chart`;
 }
 
 // ─────────────────────────────────────────────
@@ -2433,8 +2737,7 @@ function modSliderInput(el, name, maxRank) {
   } else {
     delete progress[modKey(name)];
   }
-  saveProgress();
-  updateHeader();
+  deferSave();
   updateTabStat();
 }
 
@@ -2480,10 +2783,6 @@ const RANK_ENDO = {
   'Rare Antique':     [480,1440,3360,7200,14880],
 };
 
-function fmtN(n) {
-  return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-}
-
 function modCostContent(rarity, category, fromRank, toRank) {
   if (fromRank >= toRank) return '<span class="mod-cost-lbl">Fully ranked</span>';
   const key = category === 'Antique' ? rarity + ' Antique' : rarity;
@@ -2492,8 +2791,8 @@ function modCostContent(rarity, category, fromRank, toRank) {
   if (!cr || !en) return '';
   const credits = cr[toRank - 1] - (fromRank > 0 ? cr[fromRank - 1] : 0);
   const endo    = en[toRank - 1] - (fromRank > 0 ? en[fromRank - 1] : 0);
-  return `<span><span class="mod-cost-lbl">Endo</span><span class="mod-cost-val">${fmtN(endo)}</span></span>`
-       + `<span><span class="mod-cost-lbl">Credits</span><span class="mod-cost-val">${fmtN(credits)}</span></span>`
+  return `<span><span class="mod-cost-lbl">Endo</span><span class="mod-cost-val">${fmt(endo)}</span></span>`
+       + `<span><span class="mod-cost-lbl">Credits</span><span class="mod-cost-val">${fmt(credits)}</span></span>`
        + `<span class="mod-cost-lbl">to max</span>`;
 }
 
@@ -2524,7 +2823,7 @@ function getVisibleArcanes() {
   });
 }
 
-function buildArcaneCard(name, type, acq, maxRank, rarity, tradable) {
+function buildArcaneItem(name, type, acq, maxRank, rarity, tradable, listMode) {
   const copies    = getArcaneCopies(name);
   const maxCopies = ARCANE_RANK_COPIES[maxRank];
   const rank      = derivedArcaneRank(copies, maxRank);
@@ -2538,7 +2837,7 @@ function buildArcaneCard(name, type, acq, maxRank, rarity, tradable) {
   const typeTag     = type ? `<div class="card-cat">${esc(type)}</div>` : '';
 
   const rankSection = `
-  <div class="card-row">
+  <div class="card-row"${listMode ? ' style="flex-shrink:0;width:220px;gap:8px"' : ''}>
     <span class="rank-num">${copies}</span>
     <div style="flex:1;display:flex;flex-direction:column;gap:2px">
       <input class="rank-slider" type="range" min="0" max="${maxCopies}" value="${copies}" style="--pct:${pct}%"
@@ -2558,6 +2857,17 @@ function buildArcaneCard(name, type, acq, maxRank, rarity, tradable) {
     qbtns += `<button class="qbtn zr" onclick="setArcaneCopies('${ename}',0)">0</button>`;
   }
 
+  if (listMode) {
+    return `<div class="card list-row${cardCls ? ' '+cardCls : ''}" data-rarity="${esc(rarity)}">
+  <div class="list-name-col">
+    <div class="card-name"><a href="${esc(wikiUrl(name))}" target="_blank" rel="noopener"${desc ? ` title="${esc(desc)}"` : ''}>${esc(name)}</a></div>
+    <div class="list-badges">${typeTag}</div>
+  </div>
+  <div class="card-obtain-row">${buildAcqTags(acq)}${tradableTag}</div>
+  ${rankSection}
+  <div class="qbtns" style="flex-shrink:0;gap:5px;min-width:112px">${qbtns}</div>
+</div>`;
+  }
   return `<div class="card${cardCls ? ' '+cardCls : ''}" data-rarity="${esc(rarity)}">
   <div class="card-top">
     <div class="card-name"><a href="${esc(wikiUrl(name))}" target="_blank" rel="noopener"${desc ? ` title="${esc(desc)}"` : ''}>${esc(name)}</a></div>
@@ -2566,51 +2876,6 @@ function buildArcaneCard(name, type, acq, maxRank, rarity, tradable) {
   <div class="card-obtain-row">${buildAcqTags(acq)}${tradableTag}</div>
   ${rankSection}
   <div class="card-foot" style="margin-top:8px"><div class="qbtns">${qbtns}</div></div>
-</div>`;
-}
-
-function buildArcaneListRow(name, type, acq, maxRank, rarity, tradable) {
-  const copies    = getArcaneCopies(name);
-  const maxCopies = ARCANE_RANK_COPIES[maxRank];
-  const rank      = derivedArcaneRank(copies, maxRank);
-  const isMax     = rank >= maxRank;
-  const cardCls = isMax ? 'maxed' : rank > 0 ? 'partial' : copies > 0 ? 'acquired' : '';
-  const ename     = jsStr(name);
-  const desc      = ARCANE_DESC[name] || '';
-  const pct       = (copies / maxCopies * 100).toFixed(1);
-
-  const tradableTag = tradable ? `<a class="card-tradable" href="${esc(modMarketUrl(name))}" target="_blank" rel="noopener">Tradable</a>` : '';
-  const typeTag     = type ? `<div class="card-cat">${esc(type)}</div>` : '';
-
-  const rankSection = `
-  <div class="card-row" style="flex-shrink:0;width:220px;gap:8px">
-    <span class="rank-num">${copies}</span>
-    <div style="flex:1;display:flex;flex-direction:column;gap:2px">
-      <input class="rank-slider" type="range" min="0" max="${maxCopies}" value="${copies}" style="--pct:${pct}%"
-        oninput="arcaneSliderInput(this,'${ename}',${maxRank})"
-        onchange="arcaneSliderInput(this,'${ename}',${maxRank})">
-      <div class="arc-rank-lbl">${arcRankLabel(copies, maxRank)}</div>
-    </div>
-    <span class="rank-max">${maxCopies}</span>
-  </div>`;
-
-  let qbtns = '';
-  if (copies === 0) {
-    qbtns = `<button class="qbtn aq" onclick="setArcaneCopies('${ename}',1)">Owned</button>`;
-    qbtns += `<button class="qbtn mx" onclick="setArcaneCopies('${ename}',${maxCopies})">Max</button>`;
-  } else {
-    qbtns = `<button class="qbtn mx" onclick="setArcaneCopies('${ename}',${maxCopies})">Max</button>`;
-    qbtns += `<button class="qbtn zr" onclick="setArcaneCopies('${ename}',0)">0</button>`;
-  }
-
-  return `<div class="card list-row${cardCls ? ' '+cardCls : ''}" data-rarity="${esc(rarity)}">
-  <div class="list-name-col">
-    <div class="card-name"><a href="${esc(wikiUrl(name))}" target="_blank" rel="noopener"${desc ? ` title="${esc(desc)}"` : ''}>${esc(name)}</a></div>
-    <div class="list-badges">${typeTag}</div>
-  </div>
-  <div class="card-obtain-row">${buildAcqTags(acq)}${tradableTag}</div>
-  ${rankSection}
-  <div class="qbtns" style="flex-shrink:0;gap:5px;min-width:112px">${qbtns}</div>
 </div>`;
 }
 
@@ -2623,8 +2888,6 @@ function renderArcanes() {
     updateTabStat();
     return;
   }
-  const builder = listView ? buildArcaneListRow : buildArcaneCard;
-
   if (groupedView) {
     const allCats = [...new Set(ARCANES.map(a => a[6]).filter(Boolean))].sort();
     grid.innerHTML = allCats.flatMap(grpCat => {
@@ -2642,10 +2905,10 @@ function renderArcanes() {
   <span class="sc-group-title"><span class="grp-arrow">${collapsed ? '▶' : '▼'}</span>${esc(grpCat)}</span>
   <span style="color:var(--text-muted);font-weight:400;font-size:10px"><b style="color:var(--gold)">${owned}</b>/${catAll.length} owned · ${maxed} maxed</span>
 </div>`;
-      return collapsed ? [hdr] : [hdr + catVisible.map(([n,t,a,mr,rar,tr]) => builder(n,t,a,mr,rar,tr)).join('')];
+      return collapsed ? [hdr] : [hdr + catVisible.map(([n,t,a,mr,rar,tr]) => buildArcaneItem(n,t,a,mr,rar,tr,listView)).join('')];
     }).join('');
   } else {
-    grid.innerHTML = visible.map(([n,t,a,mr,rar,tr]) => builder(n,t,a,mr,rar,tr)).join('');
+    grid.innerHTML = visible.map(([n,t,a,mr,rar,tr]) => buildArcaneItem(n,t,a,mr,rar,tr,listView)).join('');
   }
 
   updateBulkLabel(visible.length, ARCANES.length);
@@ -2658,7 +2921,7 @@ function buildAcqTags(acq) {
   return `<div class="acq-tags"><span class="acq-label">Obtain</span>${tags}</div>`;
 }
 
-function buildModCard(name, cat, acq, maxRank, polarity, rarity, exilus, tradable, type, subType) {
+function buildModItem(name, cat, acq, maxRank, polarity, rarity, exilus, tradable, type, subType, listMode) {
   const rank = getModRank(name);
   const isOwn = isModOwned(name);
   const isMax = maxRank === 0 ? isOwn : rank >= maxRank;
@@ -2675,13 +2938,13 @@ function buildModCard(name, cat, acq, maxRank, polarity, rarity, exilus, tradabl
   const subTypeTags  = (subType || []).filter(st => st && st !== type && st !== cat).map(st => `<div class="card-subtype">${esc(st)}</div>`).join('');
 
   const rankSection = maxRank > 0 ? `
-  <div class="card-row">
+  <div class="card-row"${listMode ? ' style="flex-shrink:0;width:200px;gap:8px"' : ''}>
     <span class="rank-num">${rank}</span>
     <input class="rank-slider" type="range" min="0" max="${maxRank}" value="${rank}" style="--pct:${pct}%"
       oninput="modSliderInput(this,'${ename}',${maxRank})"
       onchange="modSliderInput(this,'${ename}',${maxRank})">
     <span class="rank-max">${maxRank}</span>
-  </div>` : '';
+  </div>` : (listMode ? `<div style="flex-shrink:0;width:200px;font-size:10px;color:var(--text-muted);font-style:italic;padding:0 4px">No rank</div>` : '');
 
   let qbtns = '';
   if (maxRank > 0) {
@@ -2691,59 +2954,11 @@ function buildModCard(name, cat, acq, maxRank, polarity, rarity, exilus, tradabl
     qbtns = `<button class="qbtn aq${isOwn?' on':''}" onclick="toggleModOwned('${ename}')">${isOwn ? 'Owned ✓' : 'Owned'}</button>`;
   }
 
-  const footLeft = maxRank > 0
-    ? `<div class="mod-cost-row" style="margin:0">${modCostContent(rarity, cat, rank, maxRank)}</div>`
-    : `<div class="mod-no-rank">No rank</div>`;
-
-  return `<div class="card${cardCls ? ' '+cardCls : ''}" data-rarity="${esc(rarity)}" data-cat="${esc(cat)}">
-  <div class="card-top">
-    <div class="card-name"><a href="${esc(wikiUrl(name))}" target="_blank" rel="noopener"${desc ? ` title="${esc(desc)}"` : ''}>${esc(name)}</a></div>
-    <div style="display:flex;gap:3px;flex-shrink:0;align-items:center;flex-wrap:wrap;justify-content:flex-end">${type && type !== cat ? `<div class="card-type">${esc(type)}</div>` : ''}${subTypeTags}${exilusTag}${polarityTag}</div>
-  </div>
-  <div class="card-obtain-row">${buildAcqTags(acq)}${tradableTag}</div>
-  ${rankSection}
-  <div class="card-foot">${footLeft}<div class="qbtns">${qbtns}</div></div>
-</div>`;
-}
-
-function buildModListRow(name, cat, acq, maxRank, polarity, rarity, exilus, tradable, type, subType) {
-  const rank = getModRank(name);
-  const isOwn = isModOwned(name);
-  const isMax = maxRank === 0 ? isOwn : rank >= maxRank;
-  const isPartial = maxRank > 0 && rank > 0 && !isMax;
-  const cardCls = isMax ? 'maxed' : isPartial ? 'partial' : isOwn ? 'acquired' : '';
-  const ename = jsStr(name);
-  const desc = MOD_DESC[name] || '';
-  const pct = maxRank > 0 ? (rank / maxRank * 100).toFixed(1) : 0;
-  const rarityLow = rarity.toLowerCase().replace(/ /g, '-');
-
-  const tradableTag  = tradable ? `<a class="card-tradable" href="${esc(modMarketUrl(name))}" target="_blank" rel="noopener">Tradable</a>` : '';
-  const exilusTag    = exilus   ? `<div class="mod-exilus">Exilus</div>` : '';
-  const polarityTag  = polarity ? `<div class="mod-polarity">${esc(polarity)}</div>` : '';
-  const subTypeTags  = (subType || []).filter(st => st && st !== type && st !== cat).map(st => `<div class="card-subtype">${esc(st)}</div>`).join('');
-
-  const rankSection = maxRank > 0 ? `
-  <div class="card-row" style="flex-shrink:0;width:200px;gap:8px">
-    <span class="rank-num">${rank}</span>
-    <input class="rank-slider" type="range" min="0" max="${maxRank}" value="${rank}" style="--pct:${pct}%"
-      oninput="modSliderInput(this,'${ename}',${maxRank})"
-      onchange="modSliderInput(this,'${ename}',${maxRank})">
-    <span class="rank-max">${maxRank}</span>
-  </div>` : `<div style="flex-shrink:0;width:200px;font-size:10px;color:var(--text-muted);font-style:italic;padding:0 4px">No rank</div>`;
-
-  let qbtns = '';
-  if (maxRank > 0) {
-    const ownedBtn = rank === 0 ? `<button class="qbtn aq${isOwn?' on':''}" onclick="toggleModOwned('${ename}')">Owned</button>` : '';
-    qbtns = `${ownedBtn}<button class="qbtn mx" onclick="setModRank('${ename}',${maxRank})">Max</button><button class="qbtn zr" onclick="setModRank('${ename}',0)">0</button>`;
-  } else {
-    qbtns = `<button class="qbtn aq${isOwn?' on':''}" onclick="toggleModOwned('${ename}')">${isOwn ? 'Owned ✓' : 'Owned'}</button>`;
-  }
-
-  const xpCell = maxRank > 0
-    ? `<div class="card-xp" style="white-space:nowrap;flex-shrink:0;font-size:10px;min-width:60px"><span>${rank}</span> / ${maxRank}</div>`
-    : `<div style="min-width:60px"></div>`;
-
-  return `<div class="card list-row${cardCls ? ' '+cardCls : ''}" data-rarity="${esc(rarity)}" data-cat="${esc(cat)}">
+  if (listMode) {
+    const xpCell = maxRank > 0
+      ? `<div class="card-xp" style="white-space:nowrap;flex-shrink:0;font-size:10px;min-width:60px"><span>${rank}</span> / ${maxRank}</div>`
+      : `<div style="min-width:60px"></div>`;
+    return `<div class="card list-row${cardCls ? ' '+cardCls : ''}" data-rarity="${esc(rarity)}" data-cat="${esc(cat)}">
   <div class="list-name-col">
     <div class="card-name"><a href="${esc(wikiUrl(name))}" target="_blank" rel="noopener"${desc ? ` title="${esc(desc)}"` : ''}>${esc(name)}</a></div>
     <div class="list-badges">${type && type !== cat ? `<div class="card-type">${esc(type)}</div>` : ''}${subTypeTags}${exilusTag}${polarityTag}</div>
@@ -2752,6 +2967,19 @@ function buildModListRow(name, cat, acq, maxRank, polarity, rarity, exilus, trad
   ${rankSection}
   ${xpCell}
   <div class="qbtns" style="flex-shrink:0;gap:5px;min-width:112px">${qbtns}</div>
+</div>`;
+  }
+  const footLeft = maxRank > 0
+    ? `<div class="mod-cost-row" style="margin:0">${modCostContent(rarity, cat, rank, maxRank)}</div>`
+    : `<div class="mod-no-rank">No rank</div>`;
+  return `<div class="card${cardCls ? ' '+cardCls : ''}" data-rarity="${esc(rarity)}" data-cat="${esc(cat)}">
+  <div class="card-top">
+    <div class="card-name"><a href="${esc(wikiUrl(name))}" target="_blank" rel="noopener"${desc ? ` title="${esc(desc)}"` : ''}>${esc(name)}</a></div>
+    <div style="display:flex;gap:3px;flex-shrink:0;align-items:center;flex-wrap:wrap;justify-content:flex-end">${type && type !== cat ? `<div class="card-type">${esc(type)}</div>` : ''}${subTypeTags}${exilusTag}${polarityTag}</div>
+  </div>
+  <div class="card-obtain-row">${buildAcqTags(acq)}${tradableTag}</div>
+  ${rankSection}
+  <div class="card-foot">${footLeft}<div class="qbtns">${qbtns}</div></div>
 </div>`;
 }
 
@@ -2765,8 +2993,6 @@ function renderMods() {
     updateTabStat();
     return;
   }
-
-  const builder = listView ? buildModListRow : buildModCard;
 
   if (groupedView) {
     const allCats = [...new Set(MODS
@@ -2790,10 +3016,10 @@ function renderMods() {
   <span class="sc-group-title"><span class="grp-arrow">${collapsed ? '▶' : '▼'}</span>${esc(grpCat)}</span>
   <span style="color:var(--text-muted);font-weight:400;font-size:10px"><b style="color:var(--gold)">${owned}</b>/${catAll.length} owned · ${maxed} maxed</span>
 </div>`;
-      return collapsed ? [hdr] : [hdr + catVisible.map(([n,c,a,mr,pol,rar,ex,tr,ty,st]) => builder(n,c,a,mr,pol,rar,ex,tr,ty,st)).join('')];
+      return collapsed ? [hdr] : [hdr + catVisible.map(([n,c,a,mr,pol,rar,ex,tr,ty,st]) => buildModItem(n,c,a,mr,pol,rar,ex,tr,ty,st,listView)).join('')];
     }).join('');
   } else {
-    grid.innerHTML = visible.map(([n,c,a,mr,pol,rar,ex,tr,ty,st]) => builder(n,c,a,mr,pol,rar,ex,tr,ty,st)).join('');
+    grid.innerHTML = visible.map(([n,c,a,mr,pol,rar,ex,tr,ty,st]) => buildModItem(n,c,a,mr,pol,rar,ex,tr,ty,st,listView)).join('');
   }
 
   updateBulkLabel(visible.length, MODS.length);
@@ -2801,6 +3027,82 @@ function renderMods() {
 }
 
 // ─────────────────────────────────────────────
+// SAVE BUNDLE HELPERS
+// ─────────────────────────────────────────────
+// Full save bundle — includes progress, checklist, and custom items.
+// v1 (legacy): flat { key: number|boolean } — progress only.
+// v2: { version, progress, checklist, checklistOwned, customItems }
+
+function buildSave() {
+  return {
+    version: 2,
+    progress: progress,
+    checklist: [...checklistItems],
+    checklistOwned: checklistOwned,
+    customItems: customItems,
+  };
+}
+
+function saveBackupBundle() {
+  localStorage.setItem(LS_KEY + '-backup', JSON.stringify(buildSave()));
+}
+
+function applySave(bundle) {
+  if (!bundle || typeof bundle !== 'object' || Array.isArray(bundle) || bundle === null)
+    throw new Error('Expected a JSON object');
+
+  const isV2 = bundle.version >= 2 || 'progress' in bundle;
+
+  if (isV2) {
+    if (!bundle.progress || typeof bundle.progress !== 'object' || Array.isArray(bundle.progress))
+      throw new Error('Invalid save format: missing progress object');
+    const sanitizedProgress = {};
+    for (const [k, v] of Object.entries(bundle.progress)) {
+      if (k === '__proto__' || k === 'constructor' || k === 'prototype') continue;
+      if (typeof v !== 'number' && typeof v !== 'boolean')
+        throw new Error('Unexpected value type in progress data');
+      sanitizedProgress[k] = v;
+    }
+    // Remove existing custom items from TAB_DATA before replacing
+    for (const it of customItems) {
+      const arr = TAB_DATA[it.tab];
+      if (arr) {
+        const i = arr.findIndex(row => row[0] === it.name && row[7] === true);
+        if (i !== -1) arr.splice(i, 1);
+      }
+    }
+    progress       = sanitizedProgress;
+    checklistItems = new Set(Array.isArray(bundle.checklist) ? bundle.checklist : []);
+    checklistOwned = (bundle.checklistOwned && typeof bundle.checklistOwned === 'object' && !Array.isArray(bundle.checklistOwned))
+                     ? bundle.checklistOwned : {};
+    const VALID_CUSTOM_TABS = new Set(ADD_TABS.map(([v]) => v));
+    customItems    = (Array.isArray(bundle.customItems) ? bundle.customItems : []).filter(it =>
+      it && typeof it === 'object' && !Array.isArray(it) &&
+      typeof it.name === 'string' && it.name.trim() &&
+      typeof it.tab === 'string' && VALID_CUSTOM_TABS.has(it.tab)
+    );
+    for (const it of customItems) { _mergeCustomItem(it); delete searchIndex[it.tab]; }
+    saveProgress();
+    saveChecklist();
+    saveChecklistOwned();
+    saveCustomItems();
+  } else {
+    // Legacy format: flat progress object (number|boolean values only)
+    const sanitizedProgress = {};
+    for (const [k, v] of Object.entries(bundle)) {
+      if (k === '__proto__' || k === 'constructor' || k === 'prototype') continue;
+      if (typeof v !== 'number' && typeof v !== 'boolean')
+        throw new Error('Unexpected value type in save data');
+      sanitizedProgress[k] = v;
+    }
+    progress = sanitizedProgress;
+    saveProgress();
+  }
+
+  updateHeader();
+  render();
+}
+
 // EXPORT / IMPORT
 // ─────────────────────────────────────────────
 let modalMode = 'export';
@@ -2809,7 +3111,7 @@ function openExport() {
   modalMode = 'export';
   document.getElementById('modal-title').textContent = 'Export Save';
   document.getElementById('modal-desc').textContent = 'Save to a file or copy to clipboard to back up or share your progress.';
-  document.getElementById('modal-ta').value = JSON.stringify(progress, null, 2);
+  document.getElementById('modal-ta').value = JSON.stringify(buildSave(), null, 2);
   document.getElementById('modal-ta').readOnly = true;
   document.getElementById('modal-act').textContent = 'Copy to Clipboard';
   document.getElementById('modal-msg').textContent = '';
@@ -2832,7 +3134,7 @@ function openImport() {
   document.getElementById('modal-file-name').textContent = 'JSON or .xlsx checklist · or paste below';
   document.getElementById('modal-file-input').value = '';
   document.getElementById('modal-sheets-row').style.display = 'flex';
-  document.getElementById('modal-sheets-url').value = localStorage.getItem('wf-sheets-url') || '';
+  document.getElementById('modal-sheets-url').value = sessionStorage.getItem('wf-sheets-url') || '';
   document.getElementById('modal-sheets-help').style.display = 'none';
   document.getElementById('sheets-help-link').textContent = 'Setup ▸';
   document.getElementById('modal-save-file').style.display = 'none';
@@ -2845,24 +3147,20 @@ document.getElementById('modal-act').addEventListener('click', () => {
       document.getElementById('modal-msg').textContent = 'Copied!';
     });
   } else {
+    const msg = document.getElementById('modal-msg');
+    const raw = document.getElementById('modal-ta').value;
+    if (raw.length > 5 * 1024 * 1024) {
+      msg.style.color = 'var(--red)';
+      msg.textContent = 'Data too large to import (max 5 MB).';
+      return;
+    }
     try {
-      const parsed = JSON.parse(document.getElementById('modal-ta').value);
-      if (typeof parsed !== 'object' || Array.isArray(parsed) || parsed === null)
-        throw new Error('Expected a JSON object');
-      for (const v of Object.values(parsed)) {
-        if (typeof v !== 'number' && typeof v !== 'boolean')
-          throw new Error('Unexpected value type in save data');
-      }
-      localStorage.setItem(LS_KEY + '-backup', JSON.stringify(progress));
-      progress = parsed;
-      saveProgress();
-      updateHeader();
-      render();
-      const msg = document.getElementById('modal-msg');
+      const parsed = JSON.parse(raw);
+      saveBackupBundle();
+      applySave(parsed);
       msg.style.color = 'var(--green)';
       msg.innerHTML = 'Imported! <button class="btn" style="font-size:9px;padding:2px 6px;margin-left:6px" onclick="undoImport()">Undo</button>';
     } catch {
-      const msg = document.getElementById('modal-msg');
       msg.style.color = 'var(--red)';
       msg.textContent = 'Invalid JSON — check your data.';
     }
@@ -2870,7 +3168,7 @@ document.getElementById('modal-act').addEventListener('click', () => {
 });
 
 async function saveProgressToFile() {
-  const json = JSON.stringify(progress, null, 2);
+  const json = JSON.stringify(buildSave(), null, 2);
   const msg  = document.getElementById('modal-msg');
   if (window.showSaveFilePicker) {
     try {
@@ -2930,6 +3228,11 @@ function handleFileSelect(event) {
   const isXlsx = /\.xlsx?$|\.xlsm$/i.test(file.name);
   if (isXlsx) {
     const msg = document.getElementById('modal-msg');
+    if (file.size > 5 * 1024 * 1024) {
+      msg.style.color = 'var(--red)';
+      msg.textContent = 'File is too large (max 5 MB). Are you sure this is the right file?';
+      return;
+    }
     msg.style.color = 'var(--text-muted)';
     msg.textContent = 'Reading spreadsheet…';
     const reader = new FileReader();
@@ -2937,7 +3240,7 @@ function handleFileSelect(event) {
       try {
         const parsed = convertXlsxToProgress(e.target.result);
         const count = Object.keys(parsed).length;
-        localStorage.setItem(LS_KEY + '-backup', JSON.stringify(progress));
+        saveBackupBundle();
         progress = parsed;
         saveProgress();
         updateHeader();
@@ -3190,10 +3493,9 @@ function convertXlsxToProgress(arrayBuffer) {
 
 function undoImport() {
   try {
-    progress = JSON.parse(localStorage.getItem(LS_KEY + '-backup') || '{}');
-    saveProgress();
-    updateHeader();
-    render();
+    const raw = localStorage.getItem(LS_KEY + '-backup');
+    if (!raw) throw new Error('no backup');
+    applySave(JSON.parse(raw));
     const msg = document.getElementById('modal-msg');
     msg.style.color = 'var(--green)';
     msg.textContent = 'Previous save restored.';
@@ -3236,7 +3538,7 @@ function fetchFromSheets() {
     msg.textContent = 'URL must be a Google Apps Script URL (script.google.com).';
     return;
   }
-  localStorage.setItem('wf-sheets-url', rawUrl);
+  sessionStorage.setItem('wf-sheets-url', rawUrl);
   msg.style.color = 'var(--text-muted)';
   msg.textContent = 'Fetching from Google Sheets…';
 
@@ -3275,9 +3577,14 @@ function fetchFromSheets() {
         return;
       }
     }
-    const count = Object.keys(parsed).length;
-    localStorage.setItem(LS_KEY + '-backup', JSON.stringify(progress));
-    progress = parsed;
+    const sanitized = {};
+    for (const [k, v] of Object.entries(parsed)) {
+      if (k === '__proto__' || k === 'constructor' || k === 'prototype') continue;
+      sanitized[k] = v;
+    }
+    const count = Object.keys(sanitized).length;
+    saveBackupBundle();
+    progress = sanitized;
     saveProgress(); updateHeader(); render();
     msg.style.color = 'var(--green)';
     msg.innerHTML = 'Imported ' + count + ' entries from Google Sheets. <button class="btn" style="font-size:9px;padding:2px 6px;margin-left:6px" onclick="undoImport()">Undo</button>';
@@ -3472,7 +3779,7 @@ async function writeBackup() {
       await backupHandle.requestPermission({ mode: 'readwrite' });
     }
     const w = await backupHandle.createWritable();
-    await w.write(JSON.stringify(progress, null, 2));
+    await w.write(JSON.stringify(buildSave(), null, 2));
     await w.close();
   } catch (e) {
     console.warn('[WF Tracker] Auto-backup write failed:', e.message);
@@ -3520,6 +3827,274 @@ function updateBackupBtn() {
 })();
 
 // ─────────────────────────────────────────────
+// DUCAT CALCULATOR
+// ─────────────────────────────────────────────
+const DUCAT_VALUES  = [15, 45, 100]; // 0=Common, 1=Uncommon, 2=Rare
+const DUCAT_EXCLUDE = new Set(['Forma', 'Exilus Weapon Adapter']);
+// Parts whose ducat value differs from what their minimum drop rarity would imply
+const DUCAT_EXCEPTIONS = new Map([
+  ['Akstiletto Prime\tReceiver',         45],
+  ['Braton Prime\tReceiver',             45],
+  ['Bronco Prime\tBarrel',               45],
+  ['Fang Prime\tBlueprint',              15],
+  ['Gauss Prime\tBlueprint',             25],
+  ['Khora Prime\tBlueprint',             65],
+  ['Knell Prime\tReceiver',              45],
+  ['Limbo Prime\tNeuroptics Blueprint', 100],
+  ['Mesa Prime\tSystems Blueprint',     100],
+  ['Panthera Prime\tReceiver',          100],
+  ['Rubico Prime\tStock',                45],
+  ['Saryn Prime\tNeuroptics Blueprint',  45],
+  ['Soma Prime\tBlueprint',              15],
+]);
+
+function ducatKey(item, part) { return 'duc:' + item + '\t' + part; }
+function getDucatQty(item, part) { return progress[ducatKey(item, part)] || 0; }
+
+function _ducatPartRarity(drops) {
+  let min = 2;
+  for (const drop of drops) { if (drop[1] < min) min = drop[1]; }
+  return min;
+}
+
+function _ducatPartValue(item, part, drops) {
+  const ex = DUCAT_EXCEPTIONS.get(item + '\t' + part);
+  return ex !== undefined ? ex : DUCAT_VALUES[_ducatPartRarity(drops)];
+}
+
+function _ducatGrandTotal() {
+  let total = 0;
+  for (const [k, v] of Object.entries(progress)) {
+    if (!k.startsWith('duc:') || typeof v !== 'number' || v <= 0) continue;
+    const sep = k.indexOf('\t');
+    if (sep < 0) continue;
+    const item = k.slice(4, sep);
+    const part = k.slice(sep + 1);
+    if (DUCAT_EXCLUDE.has(item)) continue;
+    const entry = typeof RELIC_DROPS !== 'undefined' ? RELIC_DROPS.get(item) : null;
+    if (!entry) continue;
+    const drops = entry[1][part];
+    if (!drops) continue;
+    total += v * _ducatPartValue(item, part, drops);
+  }
+  return total;
+}
+
+let _ducatCatMap = null;
+function _getDucatCategoryMap() {
+  if (_ducatCatMap) return _ducatCatMap;
+  _ducatCatMap = new Map();
+  if (typeof TAB_DATA === 'undefined') return _ducatCatMap;
+  const TABS = [
+    ['warframes',   'Warframes'],
+    ['primary',     'Primary'],
+    ['secondary',   'Secondary'],
+    ['melee',       'Melee'],
+    ['companions',  'Companions'],
+    ['compWeapons', 'Companion Weapons'],
+    ['archWeapons', 'Arch-Weapons'],
+    ['vehicles',    'Vehicles'],
+    ['amps',        'Amps'],
+  ];
+  for (const [tabKey, label] of TABS) {
+    const arr = TAB_DATA[tabKey];
+    if (!arr) continue;
+    for (const item of arr) {
+      const prime = item[0] + ' Prime';
+      if (!_ducatCatMap.has(prime)) _ducatCatMap.set(prime, label);
+    }
+  }
+  return _ducatCatMap;
+}
+
+const DUCAT_CAT_ORDER = ['Warframes', 'Primary', 'Secondary', 'Melee', 'Companions', 'Companion Weapons', 'Arch-Weapons', 'Vehicles', 'Amps', 'Other'];
+
+function _ducatAvailableCategories() {
+  if (typeof RELIC_DROPS === 'undefined') return [];
+  const catMap = _getDucatCategoryMap();
+  const seen = new Set();
+  for (const [itemName] of RELIC_DROPS) {
+    if (!DUCAT_EXCLUDE.has(itemName)) seen.add(catMap.get(itemName) || 'Other');
+  }
+  return DUCAT_CAT_ORDER.filter(c => seen.has(c));
+}
+
+function buildDucatSets(searchTerm) {
+  if (typeof RELIC_DROPS === 'undefined') return [];
+  const catMap = _getDucatCategoryMap();
+  const q = (searchTerm || '').toLowerCase();
+  const sets = [];
+  for (const [itemName, entry] of RELIC_DROPS) {
+    if (DUCAT_EXCLUDE.has(itemName)) continue;
+    if (q && !itemName.toLowerCase().includes(q)) continue;
+    const cat = catMap.get(itemName) || 'Other';
+    if (activeCategory && cat !== activeCategory) continue;
+    const partsObj = entry[1];
+    const parts = [];
+    for (const [partName, drops] of Object.entries(partsObj)) {
+      const rarity = _ducatPartRarity(drops);
+      parts.push({ name: partName, rarity, value: _ducatPartValue(itemName, partName, drops) });
+    }
+    parts.sort((a, b) => b.rarity - a.rarity || a.name.localeCompare(b.name));
+    sets.push({ name: itemName, vaulted: entry[0] === 1, parts, category: cat });
+  }
+  sets.sort((a, b) => a.name.localeCompare(b.name));
+  return sets;
+}
+
+function ducatInput(el) {
+  const row   = el.closest('.dc-part-row');
+  const setEl = el.closest('.dc-set');
+  const qty   = Math.max(0, parseInt(el.value) || 0);
+  el.value    = qty;
+  const item  = row.dataset.item;
+  const part  = row.dataset.part;
+  const value = parseInt(row.dataset.value);
+  const k = ducatKey(item, part);
+  if (qty > 0) progress[k] = qty; else delete progress[k];
+  deferSave();
+  const partDucats = qty * value;
+  row.querySelector('.dc-part-total').textContent = partDucats > 0 ? fmt(partDucats) : '—';
+  let setTotal = 0;
+  for (const r of setEl.querySelectorAll('.dc-part-row')) {
+    setTotal += (parseInt(r.querySelector('.dc-qty').value) || 0) * parseInt(r.dataset.value);
+  }
+  setEl.querySelector('.dc-set-sub').textContent = setTotal > 0 ? fmt(setTotal) + ' D' : '—';
+  const totalEl = document.getElementById('dc-total-val');
+  if (totalEl) totalEl.textContent = fmt(_ducatGrandTotal());
+}
+
+function ducatAcqAdd(el) {
+  const item = el.dataset.item;
+  const part = el.dataset.part;
+  const k = ducatKey(item, part);
+  if ((progress[k] || 0) > 0) return;
+  progress[k] = 1;
+  deferSave();
+  if (!el.nextElementSibling?.classList.contains('recipe-acq-badge')) {
+    const badge = document.createElement('span');
+    badge.className = 'recipe-acq-badge';
+    badge.textContent = 'Acq';
+    el.insertAdjacentElement('afterend', badge);
+  }
+  if (activeTab === 'ducats') {
+    const view = document.getElementById('ducats-view');
+    if (view) {
+      for (const row of view.querySelectorAll('.dc-part-row')) {
+        if (row.dataset.item === item && row.dataset.part === part) {
+          const inp = row.querySelector('.dc-qty');
+          if (inp) { inp.value = '1'; ducatInput(inp); }
+          break;
+        }
+      }
+    }
+  }
+}
+
+function _checkDucatAcquiredPrompt(itemName) {
+  if (typeof RELIC_DROPS === 'undefined') return;
+  const entry = RELIC_DROPS.get(itemName);
+  if (!entry) return;
+  const affected = [];
+  for (const partName of Object.keys(entry[1])) {
+    const qty = getDucatQty(itemName, partName);
+    if (qty > 0) affected.push({ partName, qty });
+  }
+  if (affected.length === 0) return;
+  const lines = affected.map(a => `  • ${a.partName}: ${a.qty} → ${Math.max(0, a.qty - 1)}`).join('\n');
+  if (!confirm(`"${itemName}" marked as acquired.\n\nSubtract 1 from these Ducat trade-in entries?\n\n${lines}`)) return;
+  for (const { partName } of affected) {
+    const k = ducatKey(itemName, partName);
+    const cur = progress[k] || 0;
+    if (cur <= 1) delete progress[k]; else progress[k] = cur - 1;
+  }
+  saveProgress();
+  render();
+}
+
+function _hasAnyDucatParts(name) {
+  if (typeof RELIC_DROPS === 'undefined') return false;
+  const entry = RELIC_DROPS.get(name);
+  if (!entry) return false;
+  for (const partName of Object.keys(entry[1])) {
+    if (getDucatQty(name, partName) > 0) return true;
+  }
+  return false;
+}
+
+function clearDucats() {
+  for (const k of Object.keys(progress)) {
+    if (k.startsWith('duc:')) delete progress[k];
+  }
+  saveProgress();
+  renderDucats();
+}
+
+function renderDucats() {
+  const view = document.getElementById('ducats-view');
+  if (!view) return;
+  const searchTerm = document.getElementById('search')?.value || '';
+  const sets = buildDucatSets(searchTerm);
+  const grand = _ducatGrandTotal();
+  const R_CLS = ['dc-rarity-0', 'dc-rarity-1', 'dc-rarity-2'];
+
+  let html = `<div class="dc-hdr">
+  <span class="dc-total-label">Total Ducats</span>
+  <span id="dc-total-val" class="dc-total-val">${fmt(grand)}</span>
+  <button class="btn" style="margin-left:auto;font-size:10px;padding:3px 9px;color:var(--red)" onclick="clearDucats()">Clear All</button>
+</div>`;
+
+  if (sets.length === 0) {
+    html += '<div class="empty">No prime sets match your search.</div>';
+    view.innerHTML = html;
+    return;
+  }
+
+  const byCategory = new Map();
+  for (const set of sets) {
+    if (!byCategory.has(set.category)) byCategory.set(set.category, []);
+    byCategory.get(set.category).push(set);
+  }
+
+  for (const cat of DUCAT_CAT_ORDER) {
+    const catSets = byCategory.get(cat);
+    if (!catSets || catSets.length === 0) continue;
+    const collapsed = collapsedGroups.has('ducats:' + cat);
+    html += `<div class="dc-section"><div class="dc-section-hdr" onclick="toggleGroupCollapse('ducats','${jsStr(cat)}')"><span class="sc-group-title"><span class="grp-arrow">${collapsed ? '▶' : '▼'}</span>${esc(cat)}</span></div>`;
+    if (!collapsed) {
+      html += '<div class="dc-grid">';
+      for (const set of catSets) {
+        let setTotal = 0;
+        let partsHtml = '';
+        for (const part of set.parts) {
+          const qty = getDucatQty(set.name, part.name);
+          const partDucats = qty * part.value;
+          setTotal += partDucats;
+          partsHtml += `<div class="dc-part-row" data-item="${esc(set.name)}" data-part="${esc(part.name)}" data-value="${part.value}">
+  <span class="dc-part-name">${esc(part.name)}</span>
+  <span class="dc-rarity ${R_CLS[part.rarity]}">${part.value}D</span>
+  <input class="dc-qty" type="number" min="0" max="999" value="${qty}" oninput="ducatInput(this)">
+  <span class="dc-part-total">${partDucats > 0 ? fmt(partDucats) : '—'}</span>
+</div>`;
+        }
+        html += `<div class="dc-set">
+  <div class="dc-set-hdr">
+    <span class="dc-set-name"><a href="${esc(wikiUrl(set.name))}" target="_blank" rel="noopener">${esc(set.name)}</a></span>
+    ${set.vaulted ? '<span class="dc-vaulted-tag">Vaulted</span>' : ''}
+    <a class="card-tradable" href="${esc(marketUrl(set.name))}" target="_blank" rel="noopener">Market</a>
+    <span class="dc-set-sub">${setTotal > 0 ? fmt(setTotal) + ' D' : '—'}</span>
+  </div>
+  ${partsHtml}
+</div>`;
+      }
+      html += '</div>';
+    }
+    html += '</div>';
+  }
+  view.innerHTML = html;
+}
+
+// ─────────────────────────────────────────────
 // INIT
 // ─────────────────────────────────────────────
 loadProgress();
@@ -3533,19 +4108,37 @@ if (_savedTab && document.querySelector(`.tab[data-tab="${_savedTab}"]`)) {
   const _isSummary = activeTab === 'summary';
   const _isMods    = activeTab === 'mods';
   const _isCl      = activeTab === 'checklist';
-  const _isSpecial = _isChart || _isSummary || _isCl;
+  const _isDucats  = activeTab === 'ducats';
+  const _isSpecial = _isChart || _isSummary || _isCl || _isDucats;
   document.getElementById('summary').classList.toggle('open', _isSummary);
   document.getElementById('checklist-view').style.display = _isCl ? 'block' : 'none';
+  document.getElementById('ducats-view').style.display    = _isDucats ? 'block' : 'none';
   document.getElementById('grid').style.display     = _isSpecial ? 'none' : 'grid';
   document.getElementById('sc').style.display       = _isChart   ? 'block' : 'none';
   document.getElementById('bulk-bar').style.display = _isSpecial ? 'none' : 'flex';
-  document.getElementById('cat-btns').style.display = _isSpecial ? 'none' : '';
+  document.getElementById('cat-btns').style.display = (_isSpecial && !_isDucats) ? 'none' : '';
   document.getElementById('search').style.display   = _isCl ? 'none' : '';
   document.getElementById('status-dd').style.display = _isSpecial ? 'none' : '';
   const _isIncarnon = ['primary','secondary','melee'].includes(activeTab);
   document.getElementById('fb-incarnon').style.display = _isIncarnon ? '' : 'none';
+  const _isAqTab = AQ_TABS.has(activeTab);
+  const _hpBtn = document.getElementById('fb-hasparts');
+  _hpBtn.style.display = _isAqTab ? '' : 'none';
+  _hpBtn.classList.toggle('on', false);
+  const _cwInd2 = document.getElementById('circuit-week-ind');
+  _cwInd2.textContent = 'Circuit: Week ' + CIRCUIT_WEEK_NOW;
+  _cwInd2.style.display = _isIncarnon ? '' : 'none';
+  const _cwWfInd2 = document.getElementById('circuit-wf-week-ind');
+  _cwWfInd2.textContent = 'Circuit: Week ' + CIRCUIT_WF_WEEK_NOW;
+  _cwWfInd2.style.display = activeTab === 'warframes' ? '' : 'none';
   document.getElementById('fb-conclave').style.display = _isMods ? '' : 'none';
   document.getElementById('fb-flawed').style.display   = _isMods ? '' : 'none';
+  const _wfTileBtn = document.getElementById('fb-wftile');
+  const _wfBgBtn   = document.getElementById('fb-wfbg');
+  _wfTileBtn.style.display = CARD_IMAGE_TABS.has(activeTab) ? '' : 'none';
+  _wfBgBtn.style.display   = activeTab === 'intrinsics' ? '' : 'none';
+  _wfTileBtn.classList.toggle('on', wfTileImages);
+  _wfBgBtn.classList.toggle('on', wfBgImages);
 }
 restoreViewPrefs();
 restoreStatus();
